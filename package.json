@@ -208,6 +208,6 @@
   },
   "dependencies": {
     "fast-xml-parser": "^5.11.2",
-    "unpdf": "^1.0.0"
+    "unpdf": "^2.1.0"
   }
 }
