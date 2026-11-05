@@ -45,10 +45,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
-      - name: Collect what is published (the pages and assets, not the build tools)
+      - name: Collect what is published (the pages and assets, not the build tools or the _headers file GitHub Pages ignores)
         run: |
           mkdir _site
-          rsync -a --exclude 'tools/' site/ _site/
+          rsync -a --exclude 'tools/' --exclude '_headers' site/ _site/
           touch _site/.nojekyll
           find _site -type f | wc -l
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
