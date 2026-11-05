@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # Libraries the extension ships and the build tooling. Grouped so one weekly pull request replaces a stream of small ones.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  # The pinned GitHub Actions in .github/workflows (kept as commit SHAs, with the version in a comment).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

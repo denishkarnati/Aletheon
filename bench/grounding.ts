@@ -97,8 +97,7 @@ export function scoreAnswer(c: Case, answer: string, ledger?: Evidence[]): Outco
     return stated.length || !ABSTAIN.test(answer) ? (stated.length ? 'fail-wrong' : 'fail-missing') : 'fail-missing';
   }
   if (!ledger) return 'pass-unaudited';
-  const L = new Ledger(path.join(os.tmpdir(), `alt-bench-${process.pid}.json`));
-  L.items = ledger;
+  const L = Ledger.fromItems(path.join(os.tmpdir(), `alt-bench-${process.pid}.json`), ledger);
   const a = auditClaims(answer, L);
   if (a.counts.uncited) return 'fail-uncited';
   if (a.counts.unsupported || a.counts['unknown-citation']) return 'fail-unsupported';

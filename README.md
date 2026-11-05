@@ -8,7 +8,8 @@
   <a href="https://github.com/denishkarnati/aletheon/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/denishkarnati/aletheon/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue">
   <img alt="Status: alpha" src="https://img.shields.io/badge/status-alpha-orange">
-  <a href="https://denishkarnati.github.io/aletheon/">Website</a> ·
+  <a href="https://github.com/denishkarnati/Aletheon/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/denishkarnati/Aletheon/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://denishkarnati.github.io/Aletheon/">Website</a> ·
   <a href="docs/HANDBOOK.md">Handbook</a> ·
   <a href="examples/">Examples</a> ·
   <a href="evidence/REPORT.md">Test evidence</a> ·

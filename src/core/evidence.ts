@@ -64,6 +64,13 @@ export class Ledger {
     }
   }
 
+  // A ledger holding exactly these items (nothing is read from or written to disk). For tests and benchmarks that need fixed ids.
+  static fromItems(file: string, items: Evidence[]): Ledger {
+    const l = new Ledger(file + '.unused');
+    items.forEach((e) => l.index(e));
+    return l;
+  }
+
   private index(e: Evidence): void {
     this.items.push(e);
     this.byId.set(e.id, e);

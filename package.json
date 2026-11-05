@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "author": "Dinesh Karnati",
   "private": true,
-  "homepage": "https://denishkarnati.github.io/aletheon/",
+  "homepage": "https://denishkarnati.github.io/Aletheon/",
   "repository": {
     "type": "git",
     "url": "https://github.com/denishkarnati/aletheon.git"
@@ -182,6 +182,8 @@
     "test:db": "esbuild test/db.test.ts --bundle --platform=node --external:@electric-sql/pglite --outfile=dist/db.test.js --log-level=warning && node dist/db.test.js",
     "test:driver": "esbuild test/driver-safety.test.ts --bundle --platform=node --outfile=dist/driver-safety.test.js --log-level=warning && node dist/driver-safety.test.js",
     "test:hardening": "npm run build && esbuild test/hardening.test.ts --bundle --platform=node --outfile=dist/hardening.test.js --log-level=warning && node dist/hardening.test.js",
+    "scan:secrets": "node scripts/scan-secrets.mjs",
+    "test:site": "node site/tools/test-atlas-data.mjs && node site/tools/test-parts-data.mjs && node site/tools/test-devices.mjs && node site/tools/test-audit-port.mjs && node site/tools/test-csp.mjs",
     "site:csp": "node site/tools/make-csp.mjs",
     "test:csp": "node site/tools/test-csp.mjs",
     "verify:driver-facts": "node site/tools/verify-driver-facts.mjs",
