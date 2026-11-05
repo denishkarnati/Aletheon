@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parts · Aletheon</title>
+    <meta
+      name="description"
+      content="Search 9,000+ real components (sensors, converters, interface ICs, memory, wireless, power and microcontrollers) with pins, interfaces, manufacturer contact pages and, where modeled, datasheet-checked registers you can simulate."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Parts · Aletheon" />
+    <meta
+      property="og:description"
+      content="9,000+ real components with pins, interfaces and manufacturer contact pages. Some can be simulated against datasheet-checked models."
+    />
+    <meta property="og:image" content="assets/og.png" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07080a;
+        --bg1: #0b0d10;
+        --bg2: #0f1216;
+        --bg3: #151920;
+        --ln: rgba(255, 255, 255, 0.075);
+        --ln2: rgba(255, 255, 255, 0.14);
+        --tx: #f4f5f7;
+        --tx2: #a4a9b3;
+        --tx3: #6c727d;
+        --ok: #7be0ae;
+        --bad: #ff7b7b;
+        --warn: #e9b866;
+        --blue: #9db9ff;
+        --r: 18px;
+        --maxw: 1240px;
+        --sans: 'Segoe UI Variable Display', 'Segoe UI Variable Text', 'SF Pro Display', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        --mono: 'Cascadia Code', 'Cascadia Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+        --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+        background: var(--bg);
+      }
+      body {
+        background: var(--bg);
+        color: var(--tx);
+        font: 15px/1.6 var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 100;
+        opacity: 0.06;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: 0;
+        cursor: pointer;
+      }
+      .wrap {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+      }
+      .mono {
+        font-family: var(--mono);
+      }
+      :focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+        border-radius: 6px;
+      }
+      .skip {
+        position: absolute;
+        left: -999px;
+      }
+      .skip:focus {
+        left: 16px;
+        top: 12px;
+        background: #fff;
+        color: #000;
+        padding: 8px 14px;
+        border-radius: 10px;
+        z-index: 200;
+      }
+      nav.pill {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 120;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 10px 8px 18px;
+        border: 1px solid var(--ln2);
+        border-radius: 999px;
+        background: rgba(14, 16, 20, 0.66);
+        backdrop-filter: blur(18px) saturate(1.4);
+        -webkit-backdrop-filter: blur(18px) saturate(1.4);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+        white-space: nowrap;
+      }
+      nav.pill .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        margin-right: 14px;
+      }
+      nav.pill .brand svg {
+        width: 26px;
+        height: 26px;
+      }
+      nav.pill .links {
+        display: flex;
+        gap: 2px;
+      }
+      nav.pill .links a {
+        padding: 8px 13px;
+        border-radius: 999px;
+        color: var(--tx2);
+        font-size: 14px;
+        transition: 0.25s;
+      }
+      nav.pill .links a:hover,
+      nav.pill .links a.on {
+        color: var(--tx);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        transition:
+          transform 0.3s var(--ease),
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .btn.primary {
+        background: #f4f5f7;
+        color: #0a0b0d;
+      }
+      .btn.ghost {
+        border: 1px solid var(--ln2);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .btn.ghost:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn.sm {
+        padding: 9px 16px;
+      }
+      .tr {
+        font: 600 9.5px var(--mono);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 6px;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .tr.vendor {
+        color: var(--ok);
+        border-color: rgba(123, 224, 174, 0.45);
+      }
+      .tr.deriv {
+        color: var(--warn);
+        border-color: rgba(233, 184, 102, 0.45);
+      }
+      .tr.user {
+        color: var(--tx2);
+        border-color: var(--ln2);
+      }
+      .tr.meas {
+        color: var(--blue);
+        border-color: rgba(157, 185, 255, 0.45);
+      }
+
+      .hero {
+        position: relative;
+        padding: 150px 0 40px;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(var(--ln) 1px, transparent 1px), linear-gradient(90deg, var(--ln) 1px, transparent 1px);
+        background-size: 72px 72px;
+        -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 0%, #000 20%, transparent 75%);
+        mask-image: radial-gradient(ellipse 70% 70% at 50% 0%, #000 20%, transparent 75%);
+      }
+      .idx {
+        font: 12px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .idx::after {
+        content: '';
+        height: 1px;
+        width: 64px;
+        background: var(--ln2);
+      }
+      h1 {
+        font-size: clamp(40px, 7vw, 92px);
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+        font-weight: 600;
+        max-width: 14ch;
+      }
+      h1 em {
+        font-style: normal;
+        background: linear-gradient(180deg, #fff, #6f747d);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .sub {
+        color: var(--tx2);
+        font-size: clamp(16px, 1.8vw, 19px);
+        max-width: 700px;
+        margin-top: 20px;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-top: 40px;
+      }
+      .kpi {
+        border: 1px solid var(--ln);
+        border-radius: var(--r);
+        background: var(--bg1);
+        padding: 18px 20px;
+      }
+      .kpi b {
+        display: block;
+        font-size: clamp(28px, 3.4vw, 44px);
+        letter-spacing: -0.05em;
+        line-height: 1;
+        font-weight: 600;
+      }
+      .kpi span {
+        display: block;
+        margin-top: 10px;
+        color: var(--tx2);
+        font-size: 12.5px;
+      }
+      .ctl {
+        position: relative;
+        z-index: 5;
+        margin-top: 34px;
+        border: 1px solid var(--ln2);
+        border-radius: var(--r);
+        background: rgba(11, 13, 16, 0.88);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        padding: 14px;
+        box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .srch {
+        flex: 1 1 260px;
+        position: relative;
+      }
+      .srch input {
+        width: 100%;
+        background: var(--bg2);
+        border: 1px solid var(--ln2);
+        border-radius: 12px;
+        padding: 11px 14px 11px 38px;
+        color: var(--tx);
+        font: 14px var(--mono);
+        outline: none;
+      }
+      .srch input:focus {
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+      .srch svg {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        width: 17px;
+        height: 17px;
+        stroke: var(--tx3);
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      select {
+        background: var(--bg2);
+        border: 1px solid var(--ln2);
+        border-radius: 10px;
+        color: var(--tx);
+        padding: 10px 12px;
+        font: 13px var(--sans);
+        max-width: 100%;
+      }
+      .chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .ch {
+        padding: 6px 12px;
+        border: 1px solid var(--ln2);
+        border-radius: 999px;
+        font-size: 12.5px;
+        color: var(--tx2);
+        transition: 0.2s;
+        white-space: nowrap;
+      }
+      .ch:hover {
+        color: var(--tx);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+      .ch.on {
+        background: #f4f5f7;
+        color: #0a0b0d;
+        border-color: #f4f5f7;
+        font-weight: 600;
+      }
+      .ch i {
+        font-style: normal;
+        font: 500 10.5px var(--mono);
+        opacity: 0.6;
+        margin-left: 6px;
+      }
+      .lbl {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        margin-right: 4px;
+      }
+      .fgrp {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 0 0;
+      }
+      .rhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin: 26px 0 10px;
+        flex-wrap: wrap;
+      }
+      .rhead b {
+        font-size: 15px;
+      }
+      .rhead span {
+        color: var(--tx3);
+        font-size: 13px;
+      }
+      .tw {
+        border: 1px solid var(--ln);
+        border-radius: var(--r);
+        background: var(--bg1);
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+        min-width: 900px;
+      }
+      th {
+        text-align: left;
+        padding: 12px 14px;
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        border-bottom: 1px solid var(--ln);
+        background: var(--bg1);
+        white-space: nowrap;
+      }
+      td {
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--ln);
+        vertical-align: middle;
+        color: var(--tx2);
+      }
+      tr.r {
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      tr.r:hover,
+      tr.r:focus-visible {
+        background: rgba(255, 255, 255, 0.04);
+      }
+      td.n b {
+        display: block;
+        color: var(--tx);
+        font-weight: 500;
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      td.n small {
+        color: var(--tx3);
+        font-size: 12px;
+        display: block;
+        max-width: 560px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      td.num {
+        font-family: var(--mono);
+        text-align: right;
+        white-space: nowrap;
+      }
+      .tag {
+        display: inline-block;
+        font: 500 10.5px var(--mono);
+        padding: 1px 7px;
+        border-radius: 6px;
+        border: 1px solid var(--ln2);
+        color: var(--tx2);
+        margin: 0 4px 3px 0;
+      }
+      .tag.lab {
+        color: var(--ok);
+        border-color: rgba(123, 224, 174, 0.5);
+      }
+      .loadm {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+      }
+      .empty {
+        padding: 40px;
+        text-align: center;
+        color: var(--tx3);
+      }
+      .veil {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        z-index: 140;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .veil.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(560px, 100%);
+        background: var(--bg1);
+        border-left: 1px solid var(--ln2);
+        z-index: 150;
+        transform: translateX(102%);
+        transition: transform 0.45s var(--ease);
+        padding: 26px;
+        overflow: auto;
+      }
+      .drawer.on {
+        transform: none;
+      }
+      .drawer h2 {
+        font-size: 26px;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin: 6px 0 4px;
+        word-break: break-word;
+      }
+      .drawer .x {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid var(--ln2);
+        font-size: 18px;
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 8px 14px;
+        margin: 18px 0;
+        font-size: 13.5px;
+      }
+      .kv dt {
+        color: var(--tx3);
+      }
+      .kv dd {
+        color: var(--tx);
+        margin: 0;
+        word-break: break-word;
+      }
+      .drawer h4 {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        margin: 24px 0 8px;
+      }
+      .note {
+        color: var(--tx3);
+        font-size: 12.5px;
+        margin-top: 8px;
+      }
+      .vlinks {
+        display: grid;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .vlinks a {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        border: 1px solid var(--ln);
+        border-radius: 12px;
+        background: var(--bg2);
+        padding: 10px 14px;
+        font-size: 13.5px;
+        transition: border-color 0.2s;
+      }
+      .vlinks a:hover {
+        border-color: var(--ln2);
+      }
+      .vlinks small {
+        font: 11px var(--mono);
+        color: var(--tx3);
+        white-space: nowrap;
+      }
+      .mini {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid var(--ln);
+        border-radius: 12px;
+        overflow: hidden;
+        font-size: 12.5px;
+      }
+      .mini td,
+      .mini th {
+        padding: 7px 10px;
+      }
+      .mini th {
+        background: var(--bg2);
+      }
+      .cta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      .src {
+        margin: 60px 0 0;
+        padding: 34px 0 80px;
+        border-top: 1px solid var(--ln);
+        color: var(--tx3);
+        font-size: 13px;
+      }
+      .src h4 {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .src p {
+        max-width: 900px;
+        margin-bottom: 10px;
+      }
+      .src code {
+        font-family: var(--mono);
+        color: var(--tx2);
+        font-size: 12px;
+      }
+      @media (max-width: 980px) {
+        nav.pill .links a:not(.k) {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .hero {
+          padding-top: 120px;
+        }
+        .kv {
+          grid-template-columns: 100px 1fr;
+        }
+      }
+      /* loading skeletons: the page is usable-looking at once while the 2.8 MB parts data downloads and is parsed */
+      .sk {
+        display: inline-block;
+        height: 12px;
+        width: 70%;
+        border-radius: 6px;
+        vertical-align: middle;
+        background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 37%, var(--bg2) 63%);
+        background-size: 400% 100%;
+        animation: shimmer 1.4s ease infinite;
+      }
+      .sk.w2 {
+        width: 45%;
+      }
+      .sk.w3 {
+        width: 30%;
+      }
+      .kpi .sk.big {
+        height: 34px;
+        width: 60%;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0 50%;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body aria-busy="true">
+    <a class="skip" href="#results">Skip to results</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links">
+        <a href="index.html#how">How it works</a><a href="atlas.html">Atlas</a><a href="parts.html" class="on k">Parts</a><a href="lab.html">Lab</a
+        ><a href="index.html#examples">Examples</a><a href="index.html#install">Install</a>
+      </div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">Parts</div>
+          <h1>Every part, <em>one place.</em></h1>
+          <p class="sub">
+            Sensors, converters, interface ICs, memory, wireless, power and microcontrollers from Texas Instruments, Analog Devices, ST, Microchip, NXP and many
+            more. See pins and interfaces, reach the manufacturer's own contact and support pages, and, for parts we have modeled, read the checked registers
+            and simulate your code.
+          </p>
+          <div class="kpis" id="kpis" aria-hidden="true">
+            <div class="kpi">
+              <span class="sk big"></span><span><i class="sk w2"></i></span>
+            </div>
+            <div class="kpi">
+              <span class="sk big"></span><span><i class="sk w2"></i></span>
+            </div>
+            <div class="kpi">
+              <span class="sk big"></span><span><i class="sk w2"></i></span>
+            </div>
+            <div class="kpi">
+              <span class="sk big"></span><span><i class="sk w2"></i></span>
+            </div>
+            <div class="kpi">
+              <span class="sk big"></span><span><i class="sk w2"></i></span>
+            </div>
+          </div>
+          <div class="ctl">
+            <div class="row">
+              <label class="srch"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M20 20l-4-4" /></svg
+                ><input
+                  id="q"
+                  type="search"
+                  placeholder="Search a part, a feature or a pin: ina226, 16-bit adc, SDA…"
+                  autocomplete="off"
+                  aria-label="Search parts"
+              /></label>
+              <select id="vendor" aria-label="Manufacturer"></select>
+              <button class="ch" id="labOnly" type="button" aria-pressed="false">Has a Lab model</button>
+            </div>
+            <div class="fgrp">
+              <span class="lbl">Category</span>
+              <div class="chips" id="cats"></div>
+            </div>
+            <div class="fgrp">
+              <span class="lbl">Interface</span>
+              <div class="chips" id="ifs"></div>
+              <span class="note" style="margin: 0 0 0 6px">derived from pin names and descriptions</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="wrap" id="results">
+        <div class="rhead"><b id="count"></b><span id="hint"></span></div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Part</th>
+                <th>Category</th>
+                <th>Manufacturer</th>
+                <th>Interfaces</th>
+                <th style="text-align: right">Pins</th>
+              </tr>
+            </thead>
+            <tbody id="tb">
+              <tr class="skel" aria-hidden="true">
+                <td class="n"><span class="sk"></span><br /><span class="sk w3"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w3"></span></td>
+                <td><span class="sk w3"></span></td>
+              </tr>
+              <tr class="skel" aria-hidden="true">
+                <td class="n"><span class="sk"></span><br /><span class="sk w3"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w3"></span></td>
+                <td><span class="sk w3"></span></td>
+              </tr>
+              <tr class="skel" aria-hidden="true">
+                <td class="n"><span class="sk"></span><br /><span class="sk w3"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w3"></span></td>
+                <td><span class="sk w3"></span></td>
+              </tr>
+              <tr class="skel" aria-hidden="true">
+                <td class="n"><span class="sk"></span><br /><span class="sk w3"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w3"></span></td>
+                <td><span class="sk w3"></span></td>
+              </tr>
+              <tr class="skel" aria-hidden="true">
+                <td class="n"><span class="sk"></span><br /><span class="sk w3"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w3"></span></td>
+                <td><span class="sk w3"></span></td>
+              </tr>
+              <tr class="skel" aria-hidden="true">
+                <td class="n"><span class="sk"></span><br /><span class="sk w3"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w2"></span></td>
+                <td><span class="sk w3"></span></td>
+                <td><span class="sk w3"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="loadm"><button class="btn ghost" id="more" type="button">Show more</button></div>
+
+        <footer class="src">
+          <h4>Where this data comes from</h4>
+          <p>
+            Part names, descriptions, pin names, footprint names and datasheet links come from the <b>KiCad official symbol libraries</b> (<code
+              id="srcline"
+            ></code
+            >), made by the KiCad community and licensed
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" rel="noopener" style="text-decoration: underline">CC BY-SA 4.0</a>. This page's
+            data file is a modified excerpt of them (we keep a subset of libraries and re-format the records), so it stays under the same licence: see
+            <a href="assets/PARTS-DATA-LICENSE.md" style="text-decoration: underline">PARTS-DATA-LICENSE.md</a>. The rest of the site's code is Apache-2.0.
+          </p>
+          <p>
+            <b>What is inferred, and how.</b> The manufacturer is taken from the domain of the datasheet link, and only for well-known manufacturer domains.
+            Interfaces are read from pin names and the words in the description, so they are hints, not a promise. The footprint is the one KiCad associates
+            with the symbol, which is not always the package of every orderable variant.
+          </p>
+          <p>
+            <b>Contact and support links</b> are company-level public pages only, found on each manufacturer's own site and re-checked by a script
+            (<code>site/tools/check-vendor-links.mjs</code>). Some sites block scripts; those links were confirmed in a normal browser. We never list personal
+            names, emails or phone numbers. Datasheets are not copied or hosted here; the link opens the manufacturer's own copy. Part and company names belong
+            to their owners, and Aletheon is not affiliated with or endorsed by any of them.
+          </p>
+          <p><a href="privacy.html" style="text-decoration: underline">Privacy and legal</a></p>
+        </footer>
+      </div>
+    </main>
+
+    <div class="veil" id="veil"></div>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+      <button class="x" id="dx" aria-label="Close">×</button>
+      <div id="dBody"></div>
+    </aside>
+
+    <script src="assets/devices-data.js"></script>
+    <script src="assets/parts.js"></script>
+  </body>
+</html>

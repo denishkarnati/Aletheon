@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chip Atlas · Aletheon</title>
+    <meta
+      name="description"
+      content="A searchable atlas of 1,000+ real development boards and 350+ microcontrollers: CPU core, clock, flash, RAM, connectivity, debug and simulation support, and which chips have a register map."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Chip Atlas · Aletheon" />
+    <meta property="og:description" content="1,000+ real boards, 350+ microcontrollers, with specs and register-map coverage. Filter, compare and export." />
+    <meta property="og:image" content="assets/og.png" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07080a;
+        --bg1: #0b0d10;
+        --bg2: #0f1216;
+        --bg3: #151920;
+        --ln: rgba(255, 255, 255, 0.075);
+        --ln2: rgba(255, 255, 255, 0.14);
+        --tx: #f4f5f7;
+        --tx2: #a4a9b3;
+        --tx3: #6c727d;
+        --ok: #7be0ae;
+        --bad: #ff7b7b;
+        --warn: #e9b866;
+        --blue: #9db9ff;
+        --r: 18px;
+        --maxw: 1240px;
+        --sans: 'Segoe UI Variable Display', 'Segoe UI Variable Text', 'SF Pro Display', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        --mono: 'Cascadia Code', 'Cascadia Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+        --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+        background: var(--bg);
+      }
+      body {
+        background: var(--bg);
+        color: var(--tx);
+        font: 15px/1.6 var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 100;
+        opacity: 0.06;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: 0;
+        cursor: pointer;
+      }
+      .wrap {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+      }
+      .mono {
+        font-family: var(--mono);
+      }
+      :focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+        border-radius: 6px;
+      }
+      .skip {
+        position: absolute;
+        left: -999px;
+      }
+      .skip:focus {
+        left: 16px;
+        top: 12px;
+        background: #fff;
+        color: #000;
+        padding: 8px 14px;
+        border-radius: 10px;
+        z-index: 200;
+      }
+      nav.pill {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 120;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 10px 8px 18px;
+        border: 1px solid var(--ln2);
+        border-radius: 999px;
+        background: rgba(14, 16, 20, 0.66);
+        backdrop-filter: blur(18px) saturate(1.4);
+        -webkit-backdrop-filter: blur(18px) saturate(1.4);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+        white-space: nowrap;
+      }
+      nav.pill .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        margin-right: 14px;
+      }
+      nav.pill .brand svg {
+        width: 26px;
+        height: 26px;
+      }
+      nav.pill .links {
+        display: flex;
+        gap: 2px;
+      }
+      nav.pill .links a {
+        padding: 8px 13px;
+        border-radius: 999px;
+        color: var(--tx2);
+        font-size: 14px;
+        transition: 0.25s;
+      }
+      nav.pill .links a:hover,
+      nav.pill .links a.on {
+        color: var(--tx);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        transition:
+          transform 0.3s var(--ease),
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .btn.primary {
+        background: #f4f5f7;
+        color: #0a0b0d;
+      }
+      .btn.ghost {
+        border: 1px solid var(--ln2);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .btn.ghost:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn.sm {
+        padding: 9px 16px;
+      }
+      .tr {
+        font: 600 9.5px var(--mono);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 6px;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .tr.vendor {
+        color: var(--ok);
+        border-color: rgba(123, 224, 174, 0.45);
+      }
+      .tr.meas {
+        color: var(--blue);
+        border-color: rgba(157, 185, 255, 0.45);
+      }
+      .tr.deriv {
+        color: var(--warn);
+        border-color: rgba(233, 184, 102, 0.45);
+      }
+      .tr.comm {
+        color: var(--bad);
+        border-color: rgba(255, 123, 123, 0.45);
+      }
+      .tr.user {
+        color: var(--tx2);
+        border-color: var(--ln2);
+      }
+
+      /* hero */
+      .hero {
+        position: relative;
+        padding: 150px 0 40px;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(var(--ln) 1px, transparent 1px), linear-gradient(90deg, var(--ln) 1px, transparent 1px);
+        background-size: 72px 72px;
+        -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 0%, #000 20%, transparent 75%);
+        mask-image: radial-gradient(ellipse 70% 70% at 50% 0%, #000 20%, transparent 75%);
+      }
+      .idx {
+        font: 12px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .idx::after {
+        content: '';
+        height: 1px;
+        width: 64px;
+        background: var(--ln2);
+      }
+      h1 {
+        font-size: clamp(40px, 7vw, 92px);
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+        font-weight: 600;
+        max-width: 14ch;
+      }
+      h1 em {
+        font-style: normal;
+        background: linear-gradient(180deg, #fff, #6f747d);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .sub {
+        color: var(--tx2);
+        font-size: clamp(16px, 1.8vw, 19px);
+        max-width: 660px;
+        margin-top: 20px;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-top: 40px;
+      }
+      .kpi {
+        border: 1px solid var(--ln);
+        border-radius: var(--r);
+        background: var(--bg1);
+        padding: 18px 20px;
+      }
+      .kpi b {
+        display: block;
+        font-size: clamp(28px, 3.4vw, 44px);
+        letter-spacing: -0.05em;
+        line-height: 1;
+        font-weight: 600;
+      }
+      .kpi span {
+        display: block;
+        margin-top: 10px;
+        color: var(--tx2);
+        font-size: 12.5px;
+      }
+      /* controls */
+      .ctl {
+        position: relative;
+        z-index: 5;
+        margin-top: 34px;
+        border: 1px solid var(--ln2);
+        border-radius: var(--r);
+        background: rgba(11, 13, 16, 0.88);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        padding: 14px;
+        box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .srch {
+        flex: 1 1 260px;
+        position: relative;
+      }
+      .srch input {
+        width: 100%;
+        background: var(--bg2);
+        border: 1px solid var(--ln2);
+        border-radius: 12px;
+        padding: 11px 14px 11px 38px;
+        color: var(--tx);
+        font: 14px var(--mono);
+        outline: none;
+      }
+      .srch input:focus {
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+      .srch svg {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        width: 17px;
+        height: 17px;
+        stroke: var(--tx3);
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      .chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .ch {
+        padding: 6px 12px;
+        border: 1px solid var(--ln2);
+        border-radius: 999px;
+        font-size: 12.5px;
+        color: var(--tx2);
+        transition: 0.2s;
+        white-space: nowrap;
+      }
+      .ch:hover {
+        color: var(--tx);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+      .ch.on {
+        background: #f4f5f7;
+        color: #0a0b0d;
+        border-color: #f4f5f7;
+        font-weight: 600;
+      }
+      .ch i {
+        font-style: normal;
+        font: 500 10.5px var(--mono);
+        opacity: 0.6;
+        margin-left: 6px;
+      }
+      .lbl {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        margin-right: 4px;
+      }
+      .fgrp {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 0 0;
+      }
+      .sl {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12.5px;
+        color: var(--tx2);
+      }
+      .sl input {
+        accent-color: #fff;
+        width: 120px;
+      }
+      .sl b {
+        font: 500 12px var(--mono);
+        color: var(--tx);
+        min-width: 62px;
+      }
+      .more {
+        margin-left: auto;
+      }
+      /* charts */
+      .charts {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr;
+        gap: 14px;
+        margin-top: 16px;
+      }
+      .card {
+        border: 1px solid var(--ln);
+        border-radius: var(--r);
+        background: var(--bg1);
+        padding: 18px 20px;
+        min-width: 0;
+      }
+      .card h3 {
+        font: 600 11px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .card h3 span {
+        text-transform: none;
+        letter-spacing: 0;
+        font-weight: 400;
+      }
+      #scat {
+        width: 100%;
+        height: 250px;
+        display: block;
+      }
+      #scat circle {
+        transition:
+          r 0.15s,
+          opacity 0.2s;
+        cursor: pointer;
+      }
+      #scat circle:hover {
+        r: 6;
+      }
+      .axis {
+        stroke: var(--ln);
+        stroke-width: 1;
+      }
+      .axt {
+        fill: var(--tx3);
+        font: 10px var(--mono);
+      }
+      .bars {
+        display: grid;
+        gap: 8px;
+      }
+      .bar {
+        display: grid;
+        grid-template-columns: 110px 1fr 34px;
+        gap: 10px;
+        align-items: center;
+        font: 11.5px var(--mono);
+        color: var(--tx2);
+        cursor: pointer;
+      }
+      .bar:hover {
+        color: var(--tx);
+      }
+      .bar .tk {
+        height: 8px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .bar .tk i {
+        display: block;
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, #4a505b, #fff);
+        transition: width 0.6s var(--ease);
+      }
+      .bar b {
+        text-align: right;
+        color: var(--tx);
+        font-weight: 500;
+      }
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+        font: 10.5px var(--mono);
+        color: var(--tx3);
+      }
+      .legend i {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+      /* table */
+      .rhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin: 26px 0 10px;
+        flex-wrap: wrap;
+      }
+      .rhead b {
+        font-size: 15px;
+      }
+      .rhead span {
+        color: var(--tx3);
+        font-size: 13px;
+      }
+      .tw {
+        border: 1px solid var(--ln);
+        border-radius: var(--r);
+        background: var(--bg1);
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+        min-width: 980px;
+      }
+      th {
+        position: sticky;
+        top: 0;
+        text-align: left;
+        padding: 12px 14px;
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        border-bottom: 1px solid var(--ln);
+        background: var(--bg1);
+        cursor: pointer;
+        white-space: nowrap;
+        user-select: none;
+      }
+      th:hover {
+        color: var(--tx);
+      }
+      th.s::after {
+        content: attr(data-d);
+        margin-left: 6px;
+        color: #fff;
+      }
+      td {
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--ln);
+        vertical-align: middle;
+        color: var(--tx2);
+      }
+      tr.r {
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      tr.r:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
+      tr.r.sel {
+        background: rgba(255, 255, 255, 0.07);
+      }
+      td.n b {
+        display: block;
+        color: var(--tx);
+        font-weight: 500;
+      }
+      td.n small {
+        color: var(--tx3);
+        font-size: 12px;
+      }
+      td.m {
+        font-family: var(--mono);
+        color: var(--tx);
+      }
+      td.num {
+        font-family: var(--mono);
+        text-align: right;
+        white-space: nowrap;
+      }
+      .tag {
+        display: inline-block;
+        font: 500 10.5px var(--mono);
+        padding: 1px 7px;
+        border-radius: 6px;
+        border: 1px solid var(--ln2);
+        color: var(--tx2);
+        margin: 0 4px 3px 0;
+      }
+      .cmpb {
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--ln2);
+        border-radius: 5px;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        color: transparent;
+      }
+      .cmpb.on {
+        background: #fff;
+        color: #000;
+        border-color: #fff;
+      }
+      .loadm {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+      }
+      .empty {
+        padding: 40px;
+        text-align: center;
+        color: var(--tx3);
+      }
+      /* drawer + modal */
+      .veil {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        z-index: 140;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .veil.on {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(480px, 100%);
+        background: var(--bg1);
+        border-left: 1px solid var(--ln2);
+        z-index: 150;
+        transform: translateX(102%);
+        transition: transform 0.45s var(--ease);
+        padding: 26px;
+        overflow: auto;
+      }
+      .drawer.on {
+        transform: none;
+      }
+      .drawer h2 {
+        font-size: 26px;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin: 6px 0 4px;
+      }
+      .drawer .x {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid var(--ln2);
+        font-size: 18px;
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 8px 14px;
+        margin: 18px 0;
+        font-size: 13.5px;
+      }
+      .kv dt {
+        color: var(--tx3);
+      }
+      .kv dd {
+        color: var(--tx);
+        margin: 0;
+        word-break: break-word;
+      }
+      .drawer h4 {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tx3);
+        margin: 22px 0 8px;
+      }
+      .code {
+        background: #080a0d;
+        border: 1px solid var(--ln);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font: 12px/1.65 var(--mono);
+        color: #c5cad3;
+        overflow: auto;
+        white-space: pre;
+        position: relative;
+      }
+      .cp {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 3px 10px;
+        border: 1px solid var(--ln2);
+        border-radius: 999px;
+        font: 11px var(--sans);
+        color: var(--tx2);
+        background: var(--bg1);
+      }
+      .note {
+        color: var(--tx3);
+        font-size: 12.5px;
+        margin-top: 8px;
+      }
+      .modal {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -46%) scale(0.97);
+        width: min(920px, calc(100% - 24px));
+        max-height: 86vh;
+        overflow: auto;
+        background: var(--bg1);
+        border: 1px solid var(--ln2);
+        border-radius: var(--r);
+        z-index: 160;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.35s var(--ease);
+        padding: 22px;
+      }
+      .modal.on {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%, -50%);
+      }
+      .modal table {
+        min-width: 0;
+      }
+      .modal th {
+        position: static;
+        cursor: default;
+      }
+      .best {
+        color: var(--ok) !important;
+        font-weight: 600;
+      }
+      .tray {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translate(-50%, 140%);
+        z-index: 130;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 12px 10px 18px;
+        border: 1px solid var(--ln2);
+        border-radius: 999px;
+        background: rgba(14, 16, 20, 0.9);
+        backdrop-filter: blur(16px);
+        transition: transform 0.45s var(--ease);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        max-width: calc(100% - 20px);
+      }
+      .tray.on {
+        transform: translate(-50%, 0);
+      }
+      .tray span {
+        font-size: 13px;
+        color: var(--tx2);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .src {
+        margin: 60px 0 0;
+        padding: 34px 0 80px;
+        border-top: 1px solid var(--ln);
+        color: var(--tx3);
+        font-size: 13px;
+      }
+      .src h4 {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .src p {
+        max-width: 900px;
+        margin-bottom: 10px;
+      }
+      .src code {
+        font-family: var(--mono);
+        color: var(--tx2);
+        font-size: 12px;
+      }
+      .srcg {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 4px 20px;
+        margin: 12px 0;
+        font: 11.5px var(--mono);
+      }
+      @media (max-width: 980px) {
+        .charts {
+          grid-template-columns: 1fr;
+        }
+        .more {
+          margin-left: 0;
+        }
+        nav.pill .links a:not(.k) {
+          display: none;
+        }
+      }
+      @media (max-width: 640px) {
+        .hero {
+          padding-top: 120px;
+        }
+        .ctl {
+          top: 70px;
+        }
+        .sl input {
+          width: 90px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#results">Skip to results</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links">
+        <a href="index.html#how">How it works</a><a href="index.html#try">Try it</a><a href="atlas.html" class="on k">Atlas</a><a href="parts.html">Parts</a
+        ><a href="lab.html">Lab</a><a href="index.html#examples">Examples</a><a href="index.html#install">Install</a>
+      </div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">Chip Atlas</div>
+          <h1>Real chips. <em>Real numbers.</em></h1>
+          <p class="sub">
+            Every board and microcontroller below comes from public manifests, not marketing pages: CPU core, clock, flash, RAM, connectivity, debug and
+            simulation support, and whether a register map exists. Filter it, chart it, compare it, export it.
+          </p>
+          <div class="kpis" id="kpis"></div>
+        </div>
+      </header>
+
+      <div class="wrap">
+        <section class="ctl" aria-label="Filters">
+          <div class="row">
+            <label class="srch"
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6" />
+                <path d="m20 20-4.5-4.5" /></svg
+              ><input id="q" type="search" placeholder="Search boards, chips, vendors…  e.g. stm32f4, esp32-s3, nrf52" aria-label="Search" autocomplete="off"
+            /></label>
+            <div class="chips" id="fsvd"></div>
+            <button class="btn ghost sm" id="reset">Reset</button>
+          </div>
+          <div class="fgrp">
+            <span class="lbl">Silicon</span>
+            <div class="chips" id="fsi"></div>
+          </div>
+          <div class="fgrp">
+            <span class="lbl">Core</span>
+            <div class="chips" id="farch"></div>
+          </div>
+          <div class="fgrp">
+            <span class="lbl">Wireless / bus</span>
+            <div class="chips" id="fconn"></div>
+            <span class="lbl" style="margin-left: 10px">Debug &amp; simulation</span>
+            <div class="chips" id="fdbg"></div>
+          </div>
+          <div class="fgrp">
+            <span class="lbl">Framework</span>
+            <div class="chips" id="ffw"></div>
+          </div>
+          <div class="fgrp">
+            <div class="sl">
+              <span class="lbl">Min clock</span><input type="range" id="smhz" min="0" max="12" value="0" aria-label="Minimum clock" /><b id="vmhz">any</b>
+            </div>
+            <div class="sl">
+              <span class="lbl">Min flash</span><input type="range" id="sfl" min="0" max="11" value="0" aria-label="Minimum flash" /><b id="vfl">any</b>
+            </div>
+            <div class="sl">
+              <span class="lbl">Min RAM</span><input type="range" id="sram" min="0" max="9" value="0" aria-label="Minimum RAM" /><b id="vram">any</b>
+            </div>
+          </div>
+        </section>
+
+        <div class="charts">
+          <div class="card">
+            <h3>Flash vs RAM <span id="scn"></span></h3>
+            <svg id="scat" viewBox="0 0 560 250" role="img" aria-label="Scatter plot of flash versus RAM for the filtered boards"></svg>
+            <div class="legend" id="scl"></div>
+          </div>
+          <div class="card">
+            <h3>By silicon vendor</h3>
+            <div class="bars" id="bsi"></div>
+          </div>
+          <div class="card">
+            <h3>By CPU clock</h3>
+            <div class="bars" id="bmhz"></div>
+          </div>
+        </div>
+
+        <div class="rhead" id="results">
+          <div><b id="cnt"></b> <span id="cnt2"></span></div>
+          <div class="row"><button class="btn ghost sm" id="csv">Export CSV</button></div>
+        </div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr id="thr"></tr>
+            </thead>
+            <tbody id="tb"></tbody>
+          </table>
+          <div class="empty" id="empty" hidden>No boards match these filters. Loosen one of them.</div>
+        </div>
+        <div class="loadm"><button class="btn ghost" id="loadm">Show more</button></div>
+
+        <section class="src" aria-label="Sources">
+          <h4>Where this data comes from</h4>
+          <p>
+            Board and chip specifications come from the open <a href="https://github.com/platformio" style="text-decoration: underline">PlatformIO</a> platform
+            repositories (Apache-2.0), read as published: <code>build.mcu</code>, <code>build.cpu</code>, <code>build.f_cpu</code>,
+            <code>upload.maximum_size</code> (flash), <code>upload.maximum_ram_size</code> (RAM), <code>connectivity</code>, <code>frameworks</code> and
+            <code>debug.*</code>. Nothing was estimated or filled in. Core names for boards without a <code>cpu</code> field are derived from the platform and
+            chip family (AVR, ESP32 families, RISC-V, MIPS) and are labelled as such. Silicon vendor is derived from the chip's part-number prefix.
+          </p>
+          <p>
+            A "register map" flag means a CMSIS-SVD file for that chip exists in the community mirror
+            <a href="https://github.com/cmsis-svd/cmsis-svd-data" style="text-decoration: underline">cmsis-svd/cmsis-svd-data</a> (file list only, no file
+            contents were read). Those files are community-mirror trust class. "basis: manifest" means PlatformIO's own debug manifest names that file; "basis:
+            name" means it was matched by part number. Always check a spec against the vendor's datasheet before you design with it.
+          </p>
+          <div class="srcg" id="srcg"></div>
+          <p id="gen"></p>
+        </section>
+      </div>
+      <p class="note" style="text-align: center; padding-bottom: 40px"><a href="privacy.html" style="text-decoration: underline">Privacy and legal</a></p>
+    </main>
+
+    <div class="veil" id="veil"></div>
+    <aside class="drawer" id="drawer" aria-label="Board details" aria-hidden="true"></aside>
+    <div class="modal" id="modal" role="dialog" aria-label="Compare boards" aria-hidden="true"></div>
+    <div class="tray" id="tray">
+      <span id="traytxt"></span><button class="btn primary sm" id="cmpgo">Compare</button><button class="btn ghost sm" id="cmpclr">Clear</button>
+    </div>
+
+    <script src="assets/atlas-data.js"></script>
+    <script src="assets/atlas.js"></script>
+  </body>
+</html>

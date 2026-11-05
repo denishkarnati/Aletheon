@@ -1,0 +1,82 @@
+[
+  {
+    "id": "E1",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd",
+    "excerpt": "Parsed ESP32-S3: 54 peripherals, 4283 registers",
+    "ts": "2026-10-26T21:00:42.792Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E2",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO.ENABLE",
+    "excerpt": "ESP32-S3 GPIO.ENABLE: address 0x60004020 (base 0x60004000 + offset 0x020), 32 bit, reset 0x00000000, access n/a\n  GPIO output enable register for GPIO0-31\n    [31:0] DATA (read-write) — GPIO output enable register for GPIO0-31",
+    "ts": "2026-10-26T21:00:42.796Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E3",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO.ENABLE_W1TS",
+    "excerpt": "ESP32-S3 GPIO.ENABLE_W1TS: address 0x60004024 (base 0x60004000 + offset 0x024), 32 bit, reset 0x00000000, access n/a\n  GPIO output enable set register for GPIO0-31\n    [31:0] ENABLE_W1TS (write-only) — GPIO output enable set register for GPIO0-31",
+    "ts": "2026-10-26T21:00:42.798Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E4",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO.ENABLE_W1TC",
+    "excerpt": "ESP32-S3 GPIO.ENABLE_W1TC: address 0x60004028 (base 0x60004000 + offset 0x028), 32 bit, reset 0x00000000, access n/a\n  GPIO output enable clear register for GPIO0-31\n    [31:0] ENABLE_W1TC (write-only) — GPIO output enable clear register for GPIO0-31",
+    "ts": "2026-10-26T21:00:42.801Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E5",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO.ENABLE1",
+    "excerpt": "ESP32-S3 GPIO.ENABLE1: address 0x6000402C (base 0x60004000 + offset 0x02C), 32 bit, reset 0x00000000, access n/a\n  GPIO output enable register for GPIO32-53\n    [21:0] DATA (read-write) — GPIO output enable register for GPIO32-53",
+    "ts": "2026-10-26T21:00:42.804Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E6",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO.ENABLE1_W1TS",
+    "excerpt": "ESP32-S3 GPIO.ENABLE1_W1TS: address 0x60004030 (base 0x60004000 + offset 0x030), 32 bit, reset 0x00000000, access n/a\n  GPIO output enable set register for GPIO32-53\n    [21:0] ENABLE1_W1TS (write-only) — GPIO output enable set register for GPIO32-53",
+    "ts": "2026-10-26T21:00:42.806Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E7",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO.ENABLE1_W1TC",
+    "excerpt": "ESP32-S3 GPIO.ENABLE1_W1TC: address 0x60004034 (base 0x60004000 + offset 0x034), 32 bit, reset 0x00000000, access n/a\n  GPIO output enable clear register for GPIO32-53\n    [21:0] ENABLE1_W1TC (write-only) — GPIO output enable clear register for GPIO32-53",
+    "ts": "2026-10-26T21:00:42.808Z",
+    "trust": "vendor-official",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E8",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd#GPIO",
+    "excerpt": "Generated include/gen/gpio_regs.h for ESP32-S3 GPIO @ 0x60004000: 397 registers, 1395 fields, 397 struct members",
+    "ts": "2026-10-26T21:00:42.811Z",
+    "trust": "derived",
+    "sha256": "d7629249eba2ad660a960530d124966e9274c8228341380dd4102f251e879e17"
+  },
+  {
+    "id": "E9",
+    "kind": "build",
+    "source": "python -m ziglang cc -c include/gen/gpio_regs.h",
+    "excerpt": "exit 0\n",
+    "ts": "2026-10-26T21:00:44.270Z",
+    "trust": "measured"
+  }
+]

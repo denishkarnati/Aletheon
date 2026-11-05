@@ -1,0 +1,135 @@
+{
+  "id": "ads1115",
+  "part": "ADS1115",
+  "kind": "16-bit delta-sigma ADC with PGA",
+  "vendor": "Texas Instruments",
+  "summary": "A 16-bit I2C analog-to-digital converter with four inputs, a programmable gain stage and selectable data rates. You pick the input pair, range and speed in the Config register, then read the result.",
+  "source": {
+    "doc": "SBAS444E",
+    "rev": "December 2024",
+    "url": "https://www.ti.com/lit/ds/symlink/ads1115.pdf",
+    "sha256": "eefff4d412ce2dcd7e659f47238edc9b2fa02e5971f2625af730502033701834",
+    "bytes": 2654255,
+    "pages": 57
+  },
+  "bus": "i2c",
+  "addresses": [
+    { "strap": "ADDR to GND", "addr": "0x48", "bin": "1001000" },
+    { "strap": "ADDR to VDD", "addr": "0x49", "bin": "1001001" },
+    { "strap": "ADDR to SDA", "addr": "0x4A", "bin": "1001010" },
+    { "strap": "ADDR to SCL", "addr": "0x4B", "bin": "1001011" }
+  ],
+  "addressCite": { "p": 20, "q": "GND 1001000b VDD 1001001b SDA 1001010b SCL 1001011b" },
+  "registers": [
+    { "addr": "0x00", "name": "Conversion", "access": "R", "reset": "0x0000", "cite": { "p": 24, "q": "Conversion Register (P[1:0] = 00b) [reset = 0000h]" } },
+    { "addr": "0x01", "name": "Config", "access": "R/W", "reset": "0x8583", "cite": { "p": 25, "q": "Config Register (P[1:0] = 01b) [reset = 8583h]" } },
+    { "addr": "0x02", "name": "Lo_thresh", "access": "R/W", "reset": "0x8000", "cite": { "p": 27, "q": "Lo_thresh (P[1:0] = 10b) [reset = 8000h]" } },
+    { "addr": "0x03", "name": "Hi_thresh", "access": "R/W", "reset": "0x7FFF", "cite": { "p": 27, "q": "Hi_thresh (P[1:0] = 11b) [reset = 7FFFh]" } }
+  ],
+  "facts": [
+    {
+      "id": "pointer",
+      "text": "The first byte after the address selects which register the next read or write uses.",
+      "cite": { "p": 24, "all": ["00b : Conversion register 01b : Config register", "10b : Lo_thresh register 11b : Hi_thresh register"] }
+    },
+    {
+      "id": "byte-order",
+      "text": "Register bytes go out most significant byte first.",
+      "cite": { "p": 20, "q": "Register bytes are sent with the most significant byte first" }
+    },
+    {
+      "id": "pga",
+      "text": "Config bits 11:9 pick the full-scale range, six real ranges; codes 5 to 7 all mean +-0.256 V. Default is +-2.048 V.",
+      "cite": {
+        "p": 26,
+        "all": [
+          "000b : FSR = ±6.144V",
+          "001b : FSR = ±4.096V",
+          "010b : FSR = ±2.048V",
+          "011b : FSR = ±1.024V",
+          "100b : FSR = ±0.512V",
+          "101b : FSR = ±0.256V",
+          "110b : FSR = ±0.256V",
+          "111b : FSR = ±0.256V"
+        ]
+      }
+    },
+    {
+      "id": "lsb",
+      "text": "The size of one count follows the range: 187.5 uV at +-6.144 V down to 7.8125 uV at +-0.256 V.",
+      "cite": { "p": 15, "all": ["±6.144V(1) 187.5μV", "±4.096V(1) 125μV", "±2.048V 62.5μV", "±1.024V 31.25μV", "±0.512V 15.625μV", "±0.256V 7.8125μV"] }
+    },
+    {
+      "id": "mux",
+      "text": "Config bits 14:12 choose the input pair: four differential and four single-ended (against GND).",
+      "cite": {
+        "p": 25,
+        "all": [
+          "000b : AINP = AIN0 and AINN = AIN1",
+          "001b : AINP = AIN0 and AINN = AIN3",
+          "010b : AINP = AIN1 and AINN = AIN3",
+          "011b : AINP = AIN2 and AINN = AIN3",
+          "100b : AINP = AIN0 and AINN = GND",
+          "101b : AINP = AIN1 and AINN = GND",
+          "110b : AINP = AIN2 and AINN = GND",
+          "111b : AINP = AIN3 and AINN = GND"
+        ]
+      }
+    },
+    {
+      "id": "dr",
+      "text": "Config bits 7:5 choose the data rate from 8 to 860 samples per second; default 128.",
+      "cite": {
+        "p": 26,
+        "all": ["000b : 8SPS", "001b : 16SPS", "010b : 32SPS", "011b : 64SPS", "100b : 128SPS", "101b : 250SPS", "110b : 475SPS", "111b : 860SPS"]
+      }
+    },
+    {
+      "id": "codes",
+      "text": "Output codes: +full scale clips at 0x7FFF, zero is 0x0000, -full scale and below clip at 0x8000.",
+      "cite": { "p": 23, "all": ["(215 – 1)/215 7FFFh", "0 0000h", "≤ –FS 8000h"] }
+    },
+    {
+      "id": "single-shot",
+      "text": "In single-shot mode (MODE=1) writing OS=1 starts one conversion; OS reads 0 while it runs and 1 when done.",
+      "cite": { "p": 25, "all": ["1b : Start a single conversion (when in power-down state)", "0b : Device is currently performing a conversion."] }
+    },
+    {
+      "id": "continuous",
+      "text": "Writing 0 to the MODE bit switches to continuous conversion.",
+      "cite": { "p": 18, "q": "To switch to continuous-conversion mode, write a 0b to the MODE bit" }
+    },
+    {
+      "id": "conv-time",
+      "text": "One conversion takes 1 / data-rate seconds (derived, not stated).",
+      "derived": true,
+      "cite": { "p": 15, "q": "Use the DR[2:0] bits in the Config register to select output data rates" }
+    }
+  ],
+  "fsr": [6.144, 4.096, 2.048, 1.024, 0.512, 0.256, 0.256, 0.256],
+  "lsbUv": [187.5, 125, 62.5, 31.25, 15.625, 7.8125, 7.8125, 7.8125],
+  "sps": [8, 16, 32, 64, 128, 250, 475, 860],
+  "mux": [
+    [0, 1],
+    [0, 3],
+    [1, 3],
+    [2, 3],
+    [0, -1],
+    [1, -1],
+    [2, -1],
+    [3, -1]
+  ],
+  "notModeled": [
+    "The comparator, the ALERT/RDY pin and the Lo_thresh/Hi_thresh behavior (the registers store values only)",
+    "The OS bit in continuous mode (reads as 1 here)",
+    "Offset, gain error, noise and input-impedance loading",
+    "ADS1113 and ADS1114 (this is the ADS1115 only)"
+  ],
+  "inputs": [
+    { "id": "ain0", "label": "AIN0", "unit": "V", "min": 0, "max": 3.3, "step": 0.001, "default": 1.65 },
+    { "id": "ain1", "label": "AIN1", "unit": "V", "min": 0, "max": 3.3, "step": 0.001, "default": 0.5 },
+    { "id": "ain2", "label": "AIN2", "unit": "V", "min": 0, "max": 3.3, "step": 0.001, "default": 2.5 },
+    { "id": "ain3", "label": "AIN3", "unit": "V", "min": 0, "max": 3.3, "step": 0.001, "default": 3.3 }
+  ],
+  "sample": "// ADS1115 at 0x48 (ADDR tied to GND): read AIN0 against GND, +-4.096 V range, one-shot\nconst ADDR = 0x48;\n// OS=1 (start), MUX=100 (AIN0/GND), PGA=001 (+-4.096 V), MODE=1 (single-shot), DR=100 (128 SPS), comparator off\nconst cfg = (1 << 15) | (0b100 << 12) | (0b001 << 9) | (1 << 8) | (0b100 << 5) | 0b11;\ni2c.writeReg16(ADDR, 0x01, cfg);\ndelay(10); // 128 SPS is about 7.8 ms per conversion\n\nlog('Config now =', hex(i2c.readReg16(ADDR, 0x01)), '(bit 15 set = conversion finished)');\nconst code = toInt16(i2c.readReg16(ADDR, 0x00));\nlog('code =', code, '->', (code * 125e-6).toFixed(4), 'V  (125 uV per count at +-4.096 V)');\n"
+}

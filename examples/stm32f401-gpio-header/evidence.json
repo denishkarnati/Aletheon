@@ -1,0 +1,73 @@
+[
+  {
+    "id": "E1",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/modm-io/cmsis-svd-stm32/main/stm32f4/STM32F401.svd",
+    "excerpt": "Parsed STM32F401: 46 peripherals, 660 registers",
+    "ts": "2026-10-26T21:00:37.157Z",
+    "trust": "community-mirror",
+    "sha256": "52cdce64199c959dd4484c455b8f8f1fb1c2eae70eb7984de56a1f5ec06dab73"
+  },
+  {
+    "id": "E2",
+    "kind": "datasheet",
+    "source": "https://www.st.com/resource/en/datasheet/stm32f401re.pdf",
+    "excerpt": "Indexed 137 pages (doc ac5bcaa39d); keyword-only (no embedding model configured)",
+    "ts": "2026-10-26T21:00:38.689Z",
+    "trust": "vendor-official",
+    "sha256": "4d82d74fd0b42a7db787286a1d6ede6411955e49fa9c7ac901b92a08ed817302"
+  },
+  {
+    "id": "E3",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/modm-io/cmsis-svd-stm32/main/stm32f4/STM32F401.svd#GPIOA.MODER",
+    "excerpt": "STM32F401 GPIOA.MODER: address 0x40020000 (base 0x40020000 + offset 0x000), 32 bit, reset 0xA8000000, access read-write\n  GPIO port mode register\n    [31:30] MODER15 — Port x configuration bits (y = 0..15)\n    [29:28] MODER14 — Port x configuration bits (y = 0..15)\n    [27:26] MODER13 — Port x configuration bits (y = 0..15)\n    [25:24] MODER12 — Port x configuration bits (y = 0..15)\n    [23:22] MODER11 — Port x configuration bits (y = 0..15)\n    [21:20] MODER10 — Port x configuration bits (y = 0..15)\n    [19:18] MODER9 — Port x configuration bits (y = 0..15)\n    [17:16] MODER8 — Port x configuration bits (y = 0..15)\n    [15:14] MODER7 — Port x configuration bits (y = 0..15)\n    [13:12] MODER6 — Port x configuration bits (y = 0..15)\n    [11:10] MODER5 — Port x configuration bits (y = 0..15)\n    [9:8] MODER4 — Port x configuration bits (y = 0..15)\n    [7:6] MODER3 — Port x configuration bits (y = 0..15)\n    [5:4] MODER2 — Port x configuration bits (y = 0..15)\n    [3:2] MODER1 — Port x configuration bits (y = 0..15)\n    [1:0] MODER0 — Port x configuration bits (y = 0..15)",
+    "ts": "2026-10-26T21:00:38.692Z",
+    "trust": "community-mirror",
+    "sha256": "52cdce64199c959dd4484c455b8f8f1fb1c2eae70eb7984de56a1f5ec06dab73"
+  },
+  {
+    "id": "E4",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/modm-io/cmsis-svd-stm32/main/stm32f4/STM32F401.svd#GPIOA",
+    "excerpt": "Generated include/gen/gpioa_regs.h for STM32F401 GPIOA @ 0x40020000: 10 registers, 161 fields, 10 struct members",
+    "ts": "2026-10-26T21:00:38.694Z",
+    "trust": "derived",
+    "sha256": "52cdce64199c959dd4484c455b8f8f1fb1c2eae70eb7984de56a1f5ec06dab73"
+  },
+  {
+    "id": "E5",
+    "kind": "build",
+    "source": "python -m ziglang cc -c include/gen/gpioa_regs.h",
+    "excerpt": "exit 0\n",
+    "ts": "2026-10-26T21:00:40.084Z",
+    "trust": "measured"
+  },
+  {
+    "id": "E6",
+    "kind": "datasheet",
+    "source": "https://www.st.com/resource/en/datasheet/stm32f401re.pdf p.60",
+    "excerpt": "Electrical characteristics STM32F401xD STM32F401xE 60/137 DS10086 Rev 5 6.3 Operating conditions 6.3.1 General operating conditions Table 14. General operating conditions Symbol Parameter Conditions Min Typ Max Unit fHCLK Internal AHB clock …[clipped]",
+    "ts": "2026-10-26T21:00:40.089Z",
+    "trust": "vendor-official",
+    "sha256": "4d82d74fd0b42a7db787286a1d6ede6411955e49fa9c7ac901b92a08ed817302"
+  },
+  {
+    "id": "E7",
+    "kind": "datasheet",
+    "source": "https://www.st.com/resource/en/datasheet/stm32f401re.pdf p.61",
+    "excerpt": "maximum difference of 300 mV between VDD and VDDA can be tolerated during power-up and power-down operation. 5. Evaluated by test in production 6. To sustain a voltage higher than VDD+0.3, the internal Pull-up and Pull-Down resistors must b …[clipped]",
+    "ts": "2026-10-26T21:00:40.092Z",
+    "trust": "vendor-official",
+    "sha256": "4d82d74fd0b42a7db787286a1d6ede6411955e49fa9c7ac901b92a08ed817302"
+  },
+  {
+    "id": "E8",
+    "kind": "datasheet",
+    "source": "https://www.st.com/resource/en/datasheet/stm32f401re.pdf p.1",
+    "excerpt": "reset, and supply management – 1.7 V to 3.6 V application supply and I/Os – POR, PDR, PVD, and BOR – 4-to-26 MHz crystal oscillator – Internal 16 MHz factory-trimmed RC – 32 kHz oscillator for RTC with calibration – Internal 32 kHz RC with  …[clipped]",
+    "ts": "2026-10-26T21:00:40.096Z",
+    "trust": "vendor-official",
+    "sha256": "4d82d74fd0b42a7db787286a1d6ede6411955e49fa9c7ac901b92a08ed817302"
+  }
+]

@@ -1,0 +1,307 @@
+{
+  "id": "adt7420",
+  "part": "ADT7420",
+  "vendor": "Analog Devices",
+  "kind": "16-bit digital temperature sensor",
+  "bus": "i2c",
+  "evidence": "driver-sources",
+  "sources": [
+    {
+      "id": "zephyr",
+      "repo": "zephyrproject-rtos/zephyr",
+      "commit": "072fd9442fe12568bcc3d3c61e4f390ed5cf35a3",
+      "path": "drivers/sensor/adi/adt7420/adt7420.h",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "no-os",
+      "repo": "analogdevicesinc/no-OS",
+      "commit": "3c5f7a780a6c326b5a27f5fc7e4d88c1d12346cd",
+      "path": "drivers/temperature/adt7420/adt7420.h",
+      "license": "BSD-3-Clause"
+    }
+  ],
+  "facts": [
+    {
+      "id": "reg.temp-msb",
+      "what": "Temperature MSB register offset",
+      "value": "0x00",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_TEMP_MSB 0x00" },
+        { "src": "no-os", "q": "#define ADT7420_REG_TEMP_MSB (ADT7320_L16 |0x00)" }
+      ]
+    },
+    {
+      "id": "reg.temp-lsb",
+      "what": "Temperature LSB register offset",
+      "value": "0x01",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_TEMP_LSB 0x01" },
+        { "src": "no-os", "q": "#define ADT7420_REG_TEMP_LSB 0x01" }
+      ]
+    },
+    {
+      "id": "reg.status",
+      "what": "Status register offset",
+      "value": "0x02",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_STATUS 0x02" },
+        { "src": "no-os", "q": "#define ADT7420_REG_STATUS 0x02" }
+      ]
+    },
+    {
+      "id": "reg.config",
+      "what": "Configuration register offset",
+      "value": "0x03",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_CONFIG 0x03" },
+        { "src": "no-os", "q": "#define ADT7420_REG_CONFIG 0x03" }
+      ]
+    },
+    {
+      "id": "reg.t-high-msb",
+      "what": "THIGH setpoint MSB register offset",
+      "value": "0x04",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_T_HIGH_MSB 0x04" },
+        { "src": "no-os", "q": "#define ADT7420_REG_T_HIGH_MSB (ADT7320_L16 |0x04 )" }
+      ]
+    },
+    {
+      "id": "reg.t-high-lsb",
+      "what": "THIGH setpoint LSB register offset",
+      "value": "0x05",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_T_HIGH_LSB 0x05" },
+        { "src": "no-os", "q": "#define ADT7420_REG_T_HIGH_LSB 0x05" }
+      ]
+    },
+    {
+      "id": "reg.t-low-msb",
+      "what": "TLOW setpoint MSB register offset",
+      "value": "0x06",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_T_LOW_MSB 0x06" },
+        { "src": "no-os", "q": "#define ADT7420_REG_T_LOW_MSB (ADT7320_L16 |0x06)" }
+      ]
+    },
+    {
+      "id": "reg.t-low-lsb",
+      "what": "TLOW setpoint LSB register offset",
+      "value": "0x07",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_T_LOW_LSB 0x07" },
+        { "src": "no-os", "q": "#define ADT7420_REG_T_LOW_LSB 0x07" }
+      ]
+    },
+    {
+      "id": "reg.t-crit-msb",
+      "what": "TCRIT setpoint MSB register offset",
+      "value": "0x08",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_T_CRIT_MSB 0x08" },
+        { "src": "no-os", "q": "#define ADT7420_REG_T_CRIT_MSB (ADT7320_L16 |0x08)" }
+      ]
+    },
+    {
+      "id": "reg.t-crit-lsb",
+      "what": "TCRIT setpoint LSB register offset",
+      "value": "0x09",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_T_CRIT_LSB 0x09" },
+        { "src": "no-os", "q": "#define ADT7420_REG_T_CRIT_LSB 0x09" }
+      ]
+    },
+    {
+      "id": "reg.hyst",
+      "what": "THYST setpoint register offset",
+      "value": "0x0A",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_HIST 0x0A" },
+        { "src": "no-os", "q": "#define ADT7420_REG_HIST 0x0A" }
+      ]
+    },
+    {
+      "id": "reg.id",
+      "what": "ID register offset",
+      "value": "0x0B",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_ID 0x0B" },
+        { "src": "no-os", "q": "#define ADT7420_REG_ID 0x0B" }
+      ]
+    },
+    {
+      "id": "reg.reset",
+      "what": "Software reset register offset",
+      "value": "0x2F",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_REG_RESET 0x2F" },
+        { "src": "no-os", "q": "#define ADT7420_REG_RESET 0x2F" }
+      ]
+    },
+    {
+      "id": "status.t-low",
+      "what": "Status bit for temperature below TLOW",
+      "value": "BIT(4)",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_STATUS_T_LOW BIT(4)" },
+        { "src": "no-os", "q": "#define ADT7420_STATUS_T_LOW NO_OS_BIT(4)" }
+      ]
+    },
+    {
+      "id": "status.t-high",
+      "what": "Status bit for temperature above THIGH",
+      "value": "BIT(5)",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_STATUS_T_HIGH BIT(5)" },
+        { "src": "no-os", "q": "#define ADT7420_STATUS_T_HIGH NO_OS_BIT(5)" }
+      ]
+    },
+    {
+      "id": "status.t-crit",
+      "what": "Status bit for temperature above TCRIT",
+      "value": "BIT(6)",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_STATUS_T_CRIT BIT(6)" },
+        { "src": "no-os", "q": "#define ADT7420_STATUS_T_CRIT NO_OS_BIT(6)" }
+      ]
+    },
+    {
+      "id": "status.ready",
+      "what": "Status bit for result ready (driver naming only; polarity is not claimed)",
+      "value": "BIT(7)",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_STATUS_RDY BIT(7)" },
+        { "src": "no-os", "q": "#define ADT7420_STATUS_RDY NO_OS_BIT(7)" }
+      ]
+    },
+    {
+      "id": "config.resolution",
+      "what": "Configuration bit that selects 16-bit resolution",
+      "value": "BIT(7)",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_CONFIG_RESOLUTION BIT(7)" },
+        { "src": "no-os", "q": "#define ADT7420_CONFIG_RESOLUTION NO_OS_BIT(7)" }
+      ]
+    },
+    {
+      "id": "mode.continuous",
+      "what": "Operation mode code: continuous conversion",
+      "value": "0",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_OP_MODE_CONT_CONV 0" },
+        { "src": "no-os", "q": "#define ADT7420_OP_MODE_CONT_CONV 0" }
+      ]
+    },
+    {
+      "id": "mode.one-shot",
+      "what": "Operation mode code: one shot",
+      "value": "1",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_OP_MODE_ONE_SHOT 1" },
+        { "src": "no-os", "q": "#define ADT7420_OP_MODE_ONE_SHOT 1" }
+      ]
+    },
+    {
+      "id": "mode.1sps",
+      "what": "Operation mode code: one sample per second",
+      "value": "2",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_OP_MODE_1_SPS 2" },
+        { "src": "no-os", "q": "#define ADT7420_OP_MODE_1_SPS 2" }
+      ]
+    },
+    {
+      "id": "mode.shutdown",
+      "what": "Operation mode code: shutdown",
+      "value": "3",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_OP_MODE_SHUTDOWN 3" },
+        { "src": "no-os", "q": "#define ADT7420_OP_MODE_SHUTDOWN 3" }
+      ]
+    },
+    {
+      "id": "config.op-mode-low-bit",
+      "what": "Operation mode field occupies bits 6:5 (low bit is 5)",
+      "value": "5",
+      "tier": "cross-checked",
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_CONFIG_OP_MODE_MASK GENMASK(6, 5)" },
+        { "src": "no-os", "q": "#define ADT7420_CONFIG_OP_MODE(x) ((x) << 5) & (NO_OS_GENMASK(6,5))" }
+      ]
+    },
+    {
+      "id": "addr.base",
+      "what": "Base I2C address, with A1 and A0 pins adding 2 and 1",
+      "value": "0x48",
+      "tier": "single-source",
+      "cites": [{ "src": "no-os", "q": "#define ADT7420_ADDRESS(x,y) (0x48 + ADT7420_A1_PIN(x) + ADT7420_A0_PIN(y))" }]
+    },
+    {
+      "id": "addr.a1-weight",
+      "what": "A1 pin selects address bit 1",
+      "value": "<< 1",
+      "tier": "single-source",
+      "cites": [{ "src": "no-os", "q": "#define ADT7420_A1_PIN(x) (((x) & 0x1) << 1)" }]
+    },
+    {
+      "id": "addr.a0-weight",
+      "what": "A0 pin selects address bit 0",
+      "value": "<< 0",
+      "tier": "single-source",
+      "cites": [{ "src": "no-os", "q": "#define ADT7420_A0_PIN(x) (((x) & 0x1) << 0)" }]
+    },
+    {
+      "id": "temp.div-16bit",
+      "what": "Counts per degree C in 16-bit mode (divide the raw value by this)",
+      "value": "128",
+      "tier": "single-source",
+      "cites": [{ "src": "no-os", "q": "#define ADT7420_16BIT_DIV 128" }]
+    },
+    {
+      "id": "temp.div-13bit",
+      "what": "Counts per degree C in 13-bit mode",
+      "value": "16",
+      "tier": "single-source",
+      "cites": [{ "src": "no-os", "q": "#define ADT7420_13BIT_DIV 16" }]
+    },
+    {
+      "id": "id.value",
+      "what": "Value of the ID register: the sources give it at different widths, so no value is claimed",
+      "value": "0xCB",
+      "tier": "conflict",
+      "conflict": true,
+      "cites": [
+        { "src": "zephyr", "q": "#define ADT7420_DEFAULT_ID 0xCB" },
+        { "src": "no-os", "q": "#define ADT7xxx_ID 0xC" }
+      ]
+    }
+  ],
+  "gaps": [
+    "The ID value is a conflict: Zephyr uses 0xCB and no-OS uses 0xC. They are consistent if 0xC is the upper nibble, but the datasheet is needed to say which bits are fixed.",
+    "Register reset values, conversion times and the alert pin behavior are not in these driver headers; they need the datasheet.",
+    "The Zephyr driver takes the I2C address from the devicetree, so the address straps rest on the no-OS header alone."
+  ]
+}

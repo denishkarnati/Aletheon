@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Aletheon board registry",
+  "description": "One entry per supported board. Validated by test/unit.test.ts. Doc and SVD links are starting points only: trust is derived from the host at fetch time, never set here.",
+  "type": "object",
+  "required": ["boards"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "boards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "vendor", "mcu", "arch", "toolchains", "baud", "docs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "Stable id used in settings and ALETHEON_BOARD" },
+          "name": { "type": "string" },
+          "vendor": { "type": "string" },
+          "mcu": { "type": "string" },
+          "arch": { "type": "string", "description": "CPU core, e.g. cortex-m0+, cortex-m4f, xtensa-lx7, riscv32, avr" },
+          "toolchains": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["platformio", "arduino-cli", "esp-idf"] } },
+          "pioBoard": { "type": "string", "description": "PlatformIO board id" },
+          "fqbn": { "type": "string", "description": "arduino-cli fully qualified board name" },
+          "baud": { "type": "integer", "minimum": 300 },
+          "svd": { "type": "string", "pattern": "^https://", "description": "CMSIS-SVD URL; prefer the vendor's own" },
+          "docs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "url"],
+              "properties": { "title": { "type": "string" }, "url": { "type": "string", "pattern": "^https://" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

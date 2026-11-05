@@ -1,0 +1,129 @@
+{
+  "id": "tmp117",
+  "part": "TMP117",
+  "kind": "Digital temperature sensor",
+  "vendor": "Texas Instruments",
+  "summary": "A 16-bit I2C temperature sensor. One register holds the result, one holds configuration and flags, two hold alert limits, and one identifies the chip.",
+  "source": {
+    "doc": "SNOSD82D",
+    "rev": "September 2022",
+    "url": "https://www.ti.com/lit/ds/symlink/tmp117.pdf",
+    "sha256": "78212e91e478035a91165397a8de8a90bfc776759dc445243c033537f0c4b789",
+    "bytes": 1717888,
+    "pages": 50
+  },
+  "bus": "i2c",
+  "addresses": [
+    { "strap": "ADD0 to GND", "addr": "0x48" },
+    { "strap": "ADD0 to V+", "addr": "0x49" },
+    { "strap": "ADD0 to SDA", "addr": "0x4A" },
+    { "strap": "ADD0 to SCL", "addr": "0x4B" }
+  ],
+  "addressCite": { "p": 21, "q": "1001000x Ground 1001001x V+ 1001010x SDA 1001011x SCL" },
+  "registers": [
+    {
+      "addr": "0x00",
+      "name": "Temp_Result",
+      "access": "R",
+      "reset": "0x8000",
+      "cite": { "p": 25, "q": "00h R 8000h Temp_Result Temperature result register" }
+    },
+    {
+      "addr": "0x01",
+      "name": "Configuration",
+      "access": "R/W",
+      "reset": "0x0220",
+      "cite": { "p": 25, "q": "01h R/W 0220h(1) Configuration Configuration register" }
+    },
+    {
+      "addr": "0x02",
+      "name": "THigh_Limit",
+      "access": "R/W",
+      "reset": "0x6000",
+      "cite": { "p": 25, "q": "02h R/W 6000h(1) THigh_Limit Temperature high limit register" }
+    },
+    { "addr": "0x03", "name": "TLow_Limit", "access": "R/W", "reset": "0x8000", "cite": { "p": 25, "q": "03h R/W 8000h(1) TLow_Limit" } },
+    { "addr": "0x0F", "name": "Device_ID", "access": "R", "reset": "0x0117", "cite": { "p": 25, "q": "0Fh R 0117h Device_ID Device ID register" } }
+  ],
+  "facts": [
+    {
+      "id": "lsb",
+      "text": "One count of the result register is 7.8125 milli-degrees C; the value is two's complement.",
+      "cite": { "p": 26, "q": "One LSB equals 7.8125 m°C" }
+    },
+    {
+      "id": "after-reset",
+      "text": "Until the first conversion finishes after a reset, the result register reads -256 C (0x8000).",
+      "cite": { "p": 26, "q": "the temperature register reads –256 °C until the first conversion" }
+    },
+    {
+      "id": "data-ready",
+      "text": "Data_Ready (Configuration bit 13) is cleared by reading either the Configuration or the result register.",
+      "cite": { "p": 14, "q": "read the configuration register or the temperature result register to clear the Data_Ready flag" }
+    },
+    {
+      "id": "high-alert",
+      "text": "HIGH_Alert (bit 15) is set when a result is above the high limit.",
+      "cite": { "p": 27, "q": "Set when the conversion result is higher than the high limit" }
+    },
+    {
+      "id": "low-alert",
+      "text": "LOW_Alert (bit 14) is set when a result is below the low limit.",
+      "cite": { "p": 27, "q": "Set when the conversion result is lower than the low limit" }
+    },
+    {
+      "id": "alert-clear",
+      "text": "The high and low alert flags clear when the Configuration register is read.",
+      "cite": { "p": 27, "q": "Cleared on read of configuration register" }
+    },
+    {
+      "id": "cycle-default",
+      "text": "The reset configuration (CONV=100) gives a one-second conversion cycle at any averaging setting.",
+      "cite": { "p": 28, "q": "100 1 s 1 s 1 s 1 s" }
+    },
+    {
+      "id": "soft-reset",
+      "text": "Writing 1 to Soft_Reset (bit 1) resets the device; the bit always reads back 0.",
+      "cite": { "p": 28, "q": "triggers software reset with a duration of 2 ms" }
+    },
+    {
+      "id": "conv-time",
+      "text": "One conversion takes about 15.5 ms typical; averaging repeats it, so the first result arrives after avg x 15.5 ms (derived, not stated).",
+      "derived": true,
+      "cite": { "p": 6, "q": "Conversion time One-shot mode 13 15.5 17.5 ms" }
+    }
+  ],
+  "cycleTable": {
+    "cite": {
+      "p": 28,
+      "all": [
+        "000 15.5 ms 125 ms 500 ms 1 s",
+        "001 125 ms 125 ms 500 ms 1 s",
+        "010 250 ms 250 ms 500 ms 1 s",
+        "011 500 ms 500 ms 500 ms 1 s",
+        "100 1 s 1 s 1 s 1 s",
+        "101 4 s 4 s 4 s 4 s",
+        "110 8 s 8 s 8 s 8 s",
+        "111 16 s 16 s 16 s 16 s"
+      ]
+    },
+    "ms": [
+      [15.5, 125, 500, 1000],
+      [125, 125, 500, 1000],
+      [250, 250, 500, 1000],
+      [500, 500, 500, 1000],
+      [1000, 1000, 1000, 1000],
+      [4000, 4000, 4000, 4000],
+      [8000, 8000, 8000, 8000],
+      [16000, 16000, 16000, 16000]
+    ]
+  },
+  "notModeled": [
+    "One-shot and shutdown modes (the MOD bits are stored but ignored)",
+    "EEPROM registers, temperature offset and the ALERT pin",
+    "Thermal (therm) alert mode: only alert mode is modeled",
+    "Noise, accuracy and self-heating: the sensor returns exactly the temperature you set, rounded to one count"
+  ],
+  "inputs": [{ "id": "temp", "label": "Temperature", "unit": "C", "min": -40, "max": 125, "step": 0.0078125, "default": 25 }],
+  "sample": "// TMP117 on I2C address 0x48 (ADD0 tied to GND)\nconst ADDR = 0x48;\nlog('Device ID =', hex(i2c.readReg16(ADDR, 0x0F)));\n\ndelay(200); // first result after a reset takes a while (see the data-ready flag)\nconst cfg = i2c.readReg16(ADDR, 0x01);\nlog('Config =', hex(cfg), (cfg & 0x2000) ? '(data ready)' : '(not ready yet)');\n\nconst raw = toInt16(i2c.readReg16(ADDR, 0x00));\nlog('raw =', raw, '->', (raw * 0.0078125).toFixed(4), 'C');\n"
+}

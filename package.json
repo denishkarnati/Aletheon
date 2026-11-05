@@ -1,0 +1,211 @@
+{
+  "name": "aletheon",
+  "displayName": "Aletheon — Grounded Firmware Engineer",
+  "description": "Hardware-aware AI for embedded firmware. Every claim is tied to a datasheet page, a build log, or a real serial capture — never an assumption.",
+  "version": "0.1.0",
+  "publisher": "aletheon",
+  "license": "Apache-2.0",
+  "author": "Dinesh Karnati",
+  "private": true,
+  "homepage": "https://denishkarnati.github.io/aletheon/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/denishkarnati/aletheon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/denishkarnati/aletheon/issues"
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#0A1020",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "AI",
+    "Programming Languages",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "firmware",
+    "embedded",
+    "esp32",
+    "stm32",
+    "arduino",
+    "rp2040",
+    "nrf52",
+    "datasheet",
+    "mcp"
+  ],
+  "main": "./dist/extension.js",
+  "bin": {
+    "aletheon-mcp": "./dist/mcp.js"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aletheon",
+          "title": "Aletheon",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "aletheon": [
+        {
+          "type": "webview",
+          "id": "aletheon.chat",
+          "name": "Firmware Engineer"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aletheon.selectBoard",
+        "title": "Aletheon: Select Target Board"
+      },
+      {
+        "command": "aletheon.detectBoards",
+        "title": "Aletheon: Detect Connected Boards"
+      },
+      {
+        "command": "aletheon.indexDatasheet",
+        "title": "Aletheon: Index Datasheet (URL or file)"
+      },
+      {
+        "command": "aletheon.indexSvd",
+        "title": "Aletheon: Index Register Map (SVD / CMSIS-Pack)"
+      },
+      {
+        "command": "aletheon.generateDriver",
+        "title": "Aletheon: Generate Driver (SVD-grounded)"
+      },
+      {
+        "command": "aletheon.buildSemanticIndex",
+        "title": "Aletheon: Build Semantic Index for Indexed Datasheets"
+      },
+      {
+        "command": "aletheon.verifyDocs",
+        "title": "Aletheon: Verify Board Documentation Links"
+      },
+      {
+        "command": "aletheon.showLedger",
+        "title": "Aletheon: Show Evidence Ledger"
+      },
+      {
+        "command": "aletheon.setApiKey",
+        "title": "Aletheon: Set AI Provider API Key"
+      },
+      {
+        "command": "aletheon.newChat",
+        "title": "Aletheon: New Conversation"
+      }
+    ],
+    "configuration": {
+      "title": "Aletheon",
+      "properties": {
+        "aletheon.provider": {
+          "type": "string",
+          "enum": [
+            "anthropic",
+            "openai-compatible"
+          ],
+          "default": "anthropic",
+          "description": "anthropic = Claude. openai-compatible = OpenAI, Ollama, OpenRouter, Gemini (OpenAI endpoint), etc."
+        },
+        "aletheon.model": {
+          "type": "string",
+          "default": "claude-sonnet-5-5",
+          "description": "Model id for the selected provider."
+        },
+        "aletheon.baseUrl": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Override API base URL (e.g. http://localhost:11434/v1 for Ollama). Machine-scoped: a project's .vscode/settings.json cannot change where your API key is sent."
+        },
+        "aletheon.embeddings.provider": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "off",
+            "ollama",
+            "openai-compatible",
+            "local"
+          ],
+          "default": "auto",
+          "description": "Embedding backend for semantic datasheet search. auto = Ollama if running with the model, else the optional local transformers.js package, else keyword-only."
+        },
+        "aletheon.embeddings.model": {
+          "type": "string",
+          "default": "",
+          "description": "Embedding model (default: nomic-embed-text for Ollama, text-embedding-3-small for OpenAI-compatible, Xenova/all-MiniLM-L6-v2 for local)."
+        },
+        "aletheon.embeddings.baseUrl": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Override embedding endpoint base URL. Machine-scoped so a project cannot redirect your datasheet text or key."
+        },
+        "aletheon.toolchain": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "platformio",
+            "arduino-cli",
+            "esp-idf"
+          ],
+          "default": "auto"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "bench:retrieval": "esbuild test/retrieval.bench.ts --bundle --platform=node --outfile=dist/retrieval.bench.js --log-level=warning && node dist/retrieval.bench.js",
+    "test:embeddings": "esbuild test/embeddings.test.ts --bundle --platform=node --outfile=dist/embeddings.test.js --log-level=warning && node dist/embeddings.test.js",
+    "test:audit": "esbuild test/audit.test.ts --bundle --platform=node --outfile=dist/audit.test.js --log-level=warning && node dist/audit.test.js",
+    "bench:grounding": "esbuild bench/grounding.ts --bundle --platform=node --outfile=dist/grounding.bench.js --log-level=warning && node dist/grounding.bench.js",
+    "test:unit": "esbuild test/unit.test.ts --bundle --platform=node --outfile=dist/unit.test.js --log-level=warning && node dist/unit.test.js",
+    "test:agent": "esbuild test/agent.test.ts --bundle --platform=node --outfile=dist/agent.test.js --log-level=warning && node dist/agent.test.js",
+    "test:mcp": "npm run build && esbuild test/mcp.test.ts --bundle --platform=node --outfile=dist/mcp.test.js --log-level=warning && node dist/mcp.test.js",
+    "test:net": "esbuild test/net.test.ts --bundle --platform=node --outfile=dist/net.test.js --log-level=warning && node dist/net.test.js",
+    "test:db": "esbuild test/db.test.ts --bundle --platform=node --external:@electric-sql/pglite --outfile=dist/db.test.js --log-level=warning && node dist/db.test.js",
+    "test:driver": "esbuild test/driver-safety.test.ts --bundle --platform=node --outfile=dist/driver-safety.test.js --log-level=warning && node dist/driver-safety.test.js",
+    "test:hardening": "npm run build && esbuild test/hardening.test.ts --bundle --platform=node --outfile=dist/hardening.test.js --log-level=warning && node dist/hardening.test.js",
+    "site:csp": "node site/tools/make-csp.mjs",
+    "test:csp": "node site/tools/test-csp.mjs",
+    "verify:driver-facts": "node site/tools/verify-driver-facts.mjs",
+    "test:headers": "esbuild test/headers.test.ts --bundle --platform=node --outfile=dist/headers.test.js --log-level=warning && node dist/headers.test.js",
+    "build": "node build.mjs",
+    "package": "npm run build && vsce package",
+    "test": "npm run test:unit && npm run test:agent && npm run test:mcp && npm run test:net && npm run test:driver && npm run test:hardening && npm run test:embeddings && npm run test:audit && npm run test:db && npm run bench:grounding",
+    "vsix": "npm run build && npx --yes @vscode/vsce package --no-dependencies",
+    "examples": "esbuild scripts/run-examples.ts --bundle --platform=node --outfile=dist/run-examples.js --log-level=warning && node dist/run-examples.js",
+    "evidence": "node scripts/evidence-report.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.12",
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.90.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.10",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.72.1"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.11.2",
+    "unpdf": "^1.0.0"
+  }
+}

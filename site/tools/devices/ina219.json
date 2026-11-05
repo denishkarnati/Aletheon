@@ -1,0 +1,138 @@
+{
+  "id": "ina219",
+  "part": "INA219",
+  "kind": "High-side current and power monitor",
+  "vendor": "Texas Instruments",
+  "summary": "An I2C monitor that measures the voltage across a shunt resistor and the bus voltage. After you program a calibration value it also reports current and power directly.",
+  "source": {
+    "doc": "SBOS448G",
+    "rev": "December 2015",
+    "url": "https://www.ti.com/lit/ds/symlink/ina219.pdf",
+    "sha256": "58004eda854d07478e6fc6f4398c114f60a3bcf18d4877471c7c1a306d1fa1cb",
+    "bytes": 892731,
+    "pages": 38
+  },
+  "bus": "i2c",
+  "addresses": [
+    { "strap": "A1=GND A0=GND", "addr": "0x40", "bin": "1000000" },
+    { "strap": "A1=GND A0=VS+", "addr": "0x41", "bin": "1000001" },
+    { "strap": "A1=GND A0=SDA", "addr": "0x42", "bin": "1000010" },
+    { "strap": "A1=GND A0=SCL", "addr": "0x43", "bin": "1000011" },
+    { "strap": "A1=VS+ A0=GND", "addr": "0x44", "bin": "1000100" },
+    { "strap": "A1=VS+ A0=VS+", "addr": "0x45", "bin": "1000101" },
+    { "strap": "A1=VS+ A0=SDA", "addr": "0x46", "bin": "1000110" },
+    { "strap": "A1=VS+ A0=SCL", "addr": "0x47", "bin": "1000111" },
+    { "strap": "A1=SDA A0=GND", "addr": "0x48", "bin": "1001000" },
+    { "strap": "A1=SDA A0=VS+", "addr": "0x49", "bin": "1001001" },
+    { "strap": "A1=SDA A0=SDA", "addr": "0x4A", "bin": "1001010" },
+    { "strap": "A1=SDA A0=SCL", "addr": "0x4B", "bin": "1001011" },
+    { "strap": "A1=SCL A0=GND", "addr": "0x4C", "bin": "1001100" },
+    { "strap": "A1=SCL A0=VS+", "addr": "0x4D", "bin": "1001101" },
+    { "strap": "A1=SCL A0=SDA", "addr": "0x4E", "bin": "1001110" },
+    { "strap": "A1=SCL A0=SCL", "addr": "0x4F", "bin": "1001111" }
+  ],
+  "addressCite": {
+    "p": 14,
+    "all": [
+      "GND GND 1000000",
+      "GND VS+ 1000001",
+      "GND SDA 1000010",
+      "GND SCL 1000011",
+      "VS+ GND 1000100",
+      "VS+ VS+ 1000101",
+      "VS+ SDA 1000110",
+      "VS+ SCL 1000111",
+      "SDA GND 1001000",
+      "SDA VS+ 1001001",
+      "SDA SDA 1001010",
+      "SDA SCL 1001011",
+      "SCL GND 1001100",
+      "SCL VS+ 1001101",
+      "SCL SDA 1001110",
+      "SCL SCL 1001111"
+    ]
+  },
+  "registers": [
+    {
+      "addr": "0x00",
+      "name": "Configuration",
+      "access": "R/W",
+      "reset": "0x399F",
+      "cite": { "p": 19, "q": "Configuration Register (address = 00h) [reset = 399Fh]" }
+    },
+    { "addr": "0x01", "name": "Shunt voltage", "access": "R", "reset": "0x0000", "cite": { "p": 18, "q": "01 Shunt voltage Shunt voltage measurement data." } },
+    { "addr": "0x02", "name": "Bus voltage", "access": "R", "reset": "0x0000", "cite": { "p": 18, "q": "02 Bus voltage Bus voltage measurement data." } },
+    { "addr": "0x03", "name": "Power", "access": "R", "reset": "0x0000", "cite": { "p": 23, "q": "Power Register (address = 03h) [reset = 00h]" } },
+    { "addr": "0x04", "name": "Current", "access": "R", "reset": "0x0000", "cite": { "p": 23, "q": "Current Register (address = 04h) [reset = 00h]" } },
+    {
+      "addr": "0x05",
+      "name": "Calibration",
+      "access": "R/W",
+      "reset": "0x0000",
+      "cite": { "p": 23, "q": "Calibration Register (address = 05h) [reset = 00h]" }
+    }
+  ],
+  "facts": [
+    { "id": "shunt-lsb", "text": "The shunt voltage register counts in 10 microvolt steps.", "cite": { "p": 12, "q": "Shunt Voltage LSB of 10 μV" } },
+    {
+      "id": "bus-lsb",
+      "text": "The bus voltage register counts in 4 mV steps, after shifting right by three bits.",
+      "cite": { "p": 23, "q": "(decimal = 8000, hex = 1F40), and LSB = 4 mV" }
+    },
+    {
+      "id": "bus-shift",
+      "text": "The bus voltage value sits in bits 15 to 3; shift right by three before applying the 4 mV step.",
+      "cite": { "p": 12, "q": "must be shifted right by three bits" }
+    },
+    { "id": "cal-formula", "text": "Calibration = trunc(0.04096 / (Current_LSB x Rshunt)).", "cite": { "p": 12, "q": "Cal = trunc 0.04096 Current_LSB" } },
+    { "id": "power-lsb", "text": "The power register's step is fixed at 20 times Current_LSB.", "cite": { "p": 12, "q": "Power_LSB = 20 Current_LSB" } },
+    { "id": "current-eq", "text": "Current register = shunt register x calibration / 4096.", "cite": { "p": 12, "q": "Current Register 4096" } },
+    { "id": "power-eq", "text": "Power register = current register x bus register / 5000.", "cite": { "p": 12, "q": "Power Register 5000" } },
+    {
+      "id": "worked-example",
+      "text": "The datasheet's worked example (20 mV across 2 mOhm, 12 V bus, 1 mA/bit) gives calibration 20480, shifted bus value 2995, current 10000 and power 5990. The simulator reproduces all four.",
+      "cite": {
+        "p": 26,
+        "all": [
+          "results in a calibration value of 20480 (5000h)",
+          "equal to BB3h, the decimal equivalent of 2995",
+          "the result of 10000 (2710h) is automatically loaded",
+          "the result of 5990 (1766h) is automatically loaded"
+        ]
+      }
+    },
+    {
+      "id": "cal-fs0",
+      "text": "Bit 0 of the Calibration register is not used in the calculation.",
+      "cite": { "p": 23, "q": "bit FS0 is not used in the calculation" }
+    },
+    {
+      "id": "reset-bit",
+      "text": "Writing 1 to Configuration bit 15 resets every register to its default; the bit clears itself.",
+      "cite": { "p": 19, "q": "Resets all registers to default values; this bit self-clears." }
+    },
+    {
+      "id": "brng",
+      "text": "Configuration bit 13 picks the bus range: 0 is 16 V, 1 is 32 V (default).",
+      "cite": { "p": 19, "q": "0 = 16V FSR 1 = 32V FSR (default value)" }
+    },
+    {
+      "id": "pga",
+      "text": "Configuration bits 12:11 set the shunt PGA: /1 is +-40 mV, /2 +-80 mV, /4 +-160 mV, /8 +-320 mV (default).",
+      "cite": { "p": 19, "all": ["0 0 1 ±40 mV", "0 1 /2 ±80 mV", "1 0 /4 ±160 mV", "1 1 /8 ±320 mV"] }
+    }
+  ],
+  "pga": [40, 80, 160, 320],
+  "notModeled": [
+    "ADC resolution, averaging and conversion time: registers follow the inputs immediately",
+    "Operating modes (power-down, triggered): the MODE bits are stored but ignored",
+    "The CNVR and OVF flags in the bus voltage register (always read as 0 here)",
+    "Offset, gain error and noise"
+  ],
+  "inputs": [
+    { "id": "vbus", "label": "Bus voltage", "unit": "V", "min": 0, "max": 32, "step": 0.004, "default": 12 },
+    { "id": "iload", "label": "Load current", "unit": "A", "min": -3, "max": 3.2, "step": 0.001, "default": 1 },
+    { "id": "rshunt", "label": "Shunt resistor", "unit": "ohm", "min": 0.01, "max": 1, "step": 0.01, "default": 0.1 }
+  ],
+  "sample": "// INA219 with A1=A0=GND (0x40) and a 0.1 ohm shunt\nconst ADDR = 0x40, RSHUNT = 0.1;\n// Pick a scale: up to 3.2 A, so Current_LSB = 3.2 / 2^15 ~ 100 uA.\nconst currentLsb = 0.0001;\nconst cal = Math.trunc(0.04096 / (currentLsb * RSHUNT));\ni2c.writeReg16(ADDR, 0x05, cal);\nlog('Calibration =', cal, '(' + hex(cal) + ')');\n\nconst shunt = toInt16(i2c.readReg16(ADDR, 0x01)) * 10e-6;      // volts\nconst vbus = (i2c.readReg16(ADDR, 0x02) >> 3) * 0.004;         // volts\nconst amps = toInt16(i2c.readReg16(ADDR, 0x04)) * currentLsb;\nconst watts = i2c.readReg16(ADDR, 0x03) * 20 * currentLsb;\nlog('shunt', (shunt * 1000).toFixed(2), 'mV | bus', vbus.toFixed(3), 'V');\nlog('current', amps.toFixed(4), 'A | power', watts.toFixed(3), 'W');\n"
+}

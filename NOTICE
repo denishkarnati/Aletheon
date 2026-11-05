@@ -1,0 +1,18 @@
+Aletheon
+Copyright 2026 Dinesh Karnati
+
+This product includes software developed by third parties under their own licenses:
+  - unpdf (MIT) and fast-xml-parser (MIT), bundled into the extension and the MCP server
+  - esbuild (MIT) and TypeScript (Apache-2.0), build-time only
+
+The website's data files are separate works with their own licenses:
+  - site/assets/parts-data.js is a modified excerpt of the KiCad official symbol libraries (CC BY-SA 4.0, (c) the KiCad community,
+    https://gitlab.com/kicad/libraries/kicad-symbols). The file is redistributed under CC BY-SA 4.0: see site/assets/PARTS-DATA-LICENSE.md.
+  - site/assets/atlas-data.js is built from PlatformIO board manifests (Apache-2.0) and a file list of cmsis-svd/cmsis-svd-data.
+  - site/assets/devices-data.js holds facts about Texas Instruments parts, written in our own words with short page-cited quotes
+    (15 words or fewer); the datasheet PDFs and figures are not included.
+Part and company names belong to their owners. Aletheon is not affiliated with or endorsed by them.
+
+Vendor datasheets, CMSIS-SVD files and CMSIS-Packs are NOT part of this distribution. They are fetched on the user machine from the
+vendor or a mirror at the user request and remain subject to their owners licenses. REA (github.com/morluto/rea, MIT) is an optional
+external tool and is not bundled.

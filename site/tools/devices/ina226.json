@@ -1,0 +1,190 @@
+{
+  "id": "ina226",
+  "part": "INA226",
+  "kind": "Bidirectional current and power monitor",
+  "vendor": "Texas Instruments",
+  "summary": "An I2C monitor like the INA219 but with finer steps: 2.5 microvolts on the shunt and 1.25 mV on the bus, plus alert registers and two identification registers.",
+  "source": {
+    "doc": "SBOS547C",
+    "rev": "August 2026 (as printed on the document)",
+    "url": "https://www.ti.com/lit/ds/symlink/ina226.pdf",
+    "sha256": "c9b67f886d4a5241a5e070723f7b61867409eeb27eed768b9cdd9cb17e03ca2d",
+    "bytes": 1516957,
+    "pages": 41
+  },
+  "bus": "i2c",
+  "addresses": [
+    { "strap": "A1=GND A0=GND", "addr": "0x40", "bin": "1000000" },
+    { "strap": "A1=GND A0=VS", "addr": "0x41", "bin": "1000001" },
+    { "strap": "A1=GND A0=SDA", "addr": "0x42", "bin": "1000010" },
+    { "strap": "A1=GND A0=SCL", "addr": "0x43", "bin": "1000011" },
+    { "strap": "A1=VS A0=GND", "addr": "0x44", "bin": "1000100" },
+    { "strap": "A1=VS A0=VS", "addr": "0x45", "bin": "1000101" },
+    { "strap": "A1=VS A0=SDA", "addr": "0x46", "bin": "1000110" },
+    { "strap": "A1=VS A0=SCL", "addr": "0x47", "bin": "1000111" },
+    { "strap": "A1=SDA A0=GND", "addr": "0x48", "bin": "1001000" },
+    { "strap": "A1=SDA A0=VS", "addr": "0x49", "bin": "1001001" },
+    { "strap": "A1=SDA A0=SDA", "addr": "0x4A", "bin": "1001010" },
+    { "strap": "A1=SDA A0=SCL", "addr": "0x4B", "bin": "1001011" },
+    { "strap": "A1=SCL A0=GND", "addr": "0x4C", "bin": "1001100" },
+    { "strap": "A1=SCL A0=VS", "addr": "0x4D", "bin": "1001101" },
+    { "strap": "A1=SCL A0=SDA", "addr": "0x4E", "bin": "1001110" },
+    { "strap": "A1=SCL A0=SCL", "addr": "0x4F", "bin": "1001111" }
+  ],
+  "addressCite": {
+    "p": 18,
+    "all": [
+      "GND GND 1000000",
+      "GND VS 1000001",
+      "GND SDA 1000010",
+      "GND SCL 1000011",
+      "VS GND 1000100",
+      "VS VS 1000101",
+      "VS SDA 1000110",
+      "VS SCL 1000111",
+      "SDA GND 1001000",
+      "SDA VS 1001001",
+      "SDA SDA 1001010",
+      "SDA SCL 1001011",
+      "SCL GND 1001100",
+      "SCL VS 1001101",
+      "SCL SDA 1001110",
+      "SCL SCL 1001111"
+    ]
+  },
+  "registers": [
+    {
+      "addr": "0x00",
+      "name": "Configuration",
+      "access": "R/W",
+      "reset": "0x4127",
+      "cite": { "p": 22, "all": ["00h Configuration Register", "01000001 00100111 4127 R/ W"] }
+    },
+    {
+      "addr": "0x01",
+      "name": "Shunt voltage",
+      "access": "R",
+      "reset": "0x0000",
+      "cite": { "p": 22, "q": "01h Shunt Voltage Register Shunt voltage measurement data. 00000000 00000000 0000 R" }
+    },
+    {
+      "addr": "0x02",
+      "name": "Bus voltage",
+      "access": "R",
+      "reset": "0x0000",
+      "cite": { "p": 22, "q": "02h Bus Voltage Register Bus voltage measurement data. 00000000 00000000 0000 R" }
+    },
+    {
+      "addr": "0x03",
+      "name": "Power",
+      "access": "R",
+      "reset": "0x0000",
+      "cite": { "p": 22, "all": ["03h Power Register(2)", "being delivered to the load. 00000000 00000000 0000 R"] }
+    },
+    {
+      "addr": "0x04",
+      "name": "Current",
+      "access": "R",
+      "reset": "0x0000",
+      "cite": { "p": 22, "all": ["04h Current Register(2)", "flowing through the shunt resistor. 00000000 00000000 0000 R"] }
+    },
+    {
+      "addr": "0x05",
+      "name": "Calibration",
+      "access": "R/W",
+      "reset": "0x0000",
+      "cite": { "p": 22, "all": ["05h Calibration Register", "Overall system calibration. 00000000 00000000 0000 R/ W"] }
+    },
+    {
+      "addr": "0x06",
+      "name": "Mask/Enable",
+      "access": "R/W",
+      "reset": "0x0000",
+      "cite": { "p": 22, "q": "06h Mask/Enable Register Alert configuration and Conversion Ready flag. 00000000 00000000 0000 R/ W" }
+    },
+    {
+      "addr": "0x07",
+      "name": "Alert Limit",
+      "access": "R/W",
+      "reset": "0x0000",
+      "cite": { "p": 22, "all": ["07h Alert Limit Register", "selected Alert function. 00000000 00000000 0000 R/ W"] }
+    },
+    {
+      "addr": "0xFE",
+      "name": "Manufacturer ID",
+      "access": "R",
+      "reset": "0x5449",
+      "cite": { "p": 22, "q": "FEh Manufacturer ID Register Contains unique manufacturer identification number. 0101010001001001 5449 R" }
+    },
+    {
+      "addr": "0xFF",
+      "name": "Die ID",
+      "access": "R",
+      "reset": "0x2260",
+      "cite": { "p": 22, "q": "FFh Die ID Register Contains unique die identification number." }
+    }
+  ],
+  "facts": [
+    {
+      "id": "shunt-lsb",
+      "text": "The shunt voltage register counts in 2.5 microvolt steps.",
+      "cite": { "p": 5, "q": "Shunt voltage 2.5 μV Bus voltage 1.25 mV" }
+    },
+    { "id": "bus-lsb", "text": "The bus voltage register counts in 1.25 mV steps with no bit shift.", "cite": { "p": 16, "q": "fixed 1.25mV/bit" } },
+    {
+      "id": "cal-formula",
+      "text": "Calibration = 0.00512 / (Current_LSB x Rshunt), truncated to an integer.",
+      "cite": { "p": 15, "q": "CAL = 0.00512 Current_LSB × RSHUNT" }
+    },
+    {
+      "id": "power-lsb",
+      "text": "The power register's step is fixed at 25 times Current_LSB.",
+      "cite": { "p": 26, "q": "internally programmed to equal 25 times the programmed value of the Current_LSB" }
+    },
+    {
+      "id": "current-eq",
+      "text": "Current register = shunt register x calibration / 2048.",
+      "cite": { "p": 15, "q": "Current = ShuntVoltage × CalibrationRegister 2048 (3)" }
+    },
+    {
+      "id": "power-eq",
+      "text": "Power register = current register x bus register / 20000.",
+      "cite": { "p": 16, "q": "Power = Current × BusVoltage 20000 (4)" }
+    },
+    {
+      "id": "worked-example",
+      "text": "The datasheet's worked example (20 mV shunt, 12 V bus, 1 mA/bit, 2 mOhm) gives shunt 8000, bus 9584, cal 2560, current 10000 and power 4792. The simulator reproduces all five.",
+      "cite": {
+        "p": 16,
+        "all": [
+          "Step 2 Shunt Register 01h 1F40h 8000 2.5μV 20mV",
+          "Step 3 Bus Voltage Register 02h 2570h 9584 1.25mV 11.98V",
+          "Step 4 Calibration Register 05h A00h 2560",
+          "Step 5 Current Register 04h 2710 10000 1mA 10A",
+          "Step 6 Power Register 03h 12B8h 4792 25mW 119.82W"
+        ]
+      }
+    },
+    {
+      "id": "bus-msb",
+      "text": "The top bit of the bus voltage register is always zero, since the pin only measures positive voltage.",
+      "cite": { "p": 16, "q": "the MSB of the Bus Voltage Register (02h) is always zero" }
+    },
+    {
+      "id": "no-cal",
+      "text": "Current and power read zero until the Calibration register is programmed.",
+      "cite": { "p": 22, "q": "default to '0' because the Calibration register defaults to '0'" }
+    }
+  ],
+  "notModeled": [
+    "Conversion times, averaging and operating modes: registers follow the inputs immediately",
+    "The reset bit in Configuration, the alert function and the ALERT pin (Mask/Enable and Alert Limit are plain storage)",
+    "Offset, gain error and noise"
+  ],
+  "inputs": [
+    { "id": "vbus", "label": "Bus voltage", "unit": "V", "min": 0, "max": 36, "step": 0.00125, "default": 12 },
+    { "id": "iload", "label": "Load current", "unit": "A", "min": -10, "max": 10, "step": 0.001, "default": 10 },
+    { "id": "rshunt", "label": "Shunt resistor", "unit": "ohm", "min": 0.001, "max": 0.1, "step": 0.001, "default": 0.002 }
+  ],
+  "sample": "// INA226 at 0x40 with a 2 mOhm shunt, scaled for up to 32.768 A (1 mA per count)\nconst ADDR = 0x40, RSHUNT = 0.002, currentLsb = 0.001;\nlog('Manufacturer ID =', hex(i2c.readReg16(ADDR, 0xFE)), ' Die ID =', hex(i2c.readReg16(ADDR, 0xFF)));\n\nconst cal = Math.trunc(0.00512 / (currentLsb * RSHUNT));\ni2c.writeReg16(ADDR, 0x05, cal);\nlog('Calibration =', cal, '(' + hex(cal) + ')');\n\nconst vshunt = toInt16(i2c.readReg16(ADDR, 0x01)) * 2.5e-6;\nconst vbus = i2c.readReg16(ADDR, 0x02) * 1.25e-3;\nconst amps = toInt16(i2c.readReg16(ADDR, 0x04)) * currentLsb;\nconst watts = i2c.readReg16(ADDR, 0x03) * 25 * currentLsb;\nlog('shunt', (vshunt * 1000).toFixed(3), 'mV | bus', vbus.toFixed(3), 'V');\nlog('current', amps.toFixed(3), 'A | power', watts.toFixed(2), 'W');\n"
+}

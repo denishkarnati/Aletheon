@@ -1,0 +1,203 @@
+[
+  {
+    "id": "E1",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd",
+    "excerpt": "Parsed RP2040: 37 peripherals, 1181 registers",
+    "ts": "2026-10-26T21:00:26.686Z",
+    "trust": "vendor-official",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E2",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf",
+    "excerpt": "Indexed 642 pages (doc 542206760e); keyword-only (no embedding model configured)",
+    "ts": "2026-10-26T21:00:31.819Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E3",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#UART0.UARTFR",
+    "excerpt": "RP2040 UART0.UARTFR: address 0x40034018 (base 0x40034000 + offset 0x018), 32 bit, reset 0x00000090, access read-write\n  Flag Register, UARTFR\n    [8:8] RI (read-only) — Ring indicator. This bit is the complement of the UART ring indicator, nUARTRI, modem status input. That is, the bit is \n    [7:7] TXFE (read-only) — Transmit FIFO empty. The meaning of this bit depends on the state of the FEN bit in the Line Control Register, UARTLCR_H\n    [6:6] RXFF (read-only) — Receive FIFO full. The meaning of this bit depends on the state of the FEN bit in the UARTLCR_H Register. If the FIFO is\n    [5:5] TXFF (read-only) — Transmit FIFO full. The meaning of this bit depends on the state of the FEN bit in the UARTLCR_H Register. If the FIFO i\n    [4:4] RXFE (read-only) — Receive FIFO empty. The meaning of this bit depends on the state of the FEN bit in the UARTLCR_H Register. If the FIFO i\n    [3:3] BUSY (read-only) — UART busy. If this bit is set to 1, the UART is busy transmitting data. This bit remains set until the complete byte, in\n    [2:2] DCD (read-only) — Data carrier detect. This bit is the complement of the UART data carrier detect, nUARTDCD, modem status input. That is, \n    [1:1] DSR (read-only) — Data set ready. This bit is the complement of the UART data set ready, nUARTDSR, modem status input. That is, the bit is\n    [0:0] CTS (read-only) — Clear to send. This bit is the complement of the UART clear to send, nUARTCTS, modem status input. That is, the bit is 1",
+    "ts": "2026-10-26T21:00:31.822Z",
+    "trust": "vendor-official",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E4",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#RESETS.RESET",
+    "excerpt": "RP2040 RESETS.RESET: address 0x4000C000 (base 0x4000C000 + offset 0x000), 32 bit, reset 0x01FFFFFF, access read-write\n  Reset control. If a bit is set it means the peripheral is in reset. 0 means the peripheral's reset is deasserted.\n    [22:22] UART0 (read-write)",
+    "ts": "2026-10-26T21:00:31.825Z",
+    "trust": "vendor-official",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E5",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#RESETS.RESET_DONE",
+    "excerpt": "RP2040 RESETS.RESET_DONE: address 0x4000C008 (base 0x4000C000 + offset 0x008), 32 bit, reset 0x00000000, access read-write\n  Reset done. If a bit is set then a reset done signal has been returned by the peripheral. This indicates that the peripheral's registers are ready to be accessed.\n    [22:22] UART0 (read-only)",
+    "ts": "2026-10-26T21:00:31.826Z",
+    "trust": "vendor-official",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E6",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#UART0.UARTFR",
+    "excerpt": "UART0.UARTFR: address 0x40034018 (offset 0x18)",
+    "ts": "2026-10-26T21:00:31.829Z",
+    "trust": "vendor-official",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E7",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.430",
+    "excerpt": "4.2.8. List of Registers The UART0 and UART1 registers start at base addresses of 0x40034000 and 0x40038000 respectively (defined as UART0_BASE and UART1_BASE in SDK). Table 425. List of UART registers Offset Name Info 0x000 UARTDR Data Reg …[clipped]",
+    "ts": "2026-10-26T21:00:31.831Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E8",
+    "kind": "svd",
+    "source": "cross_check_register",
+    "excerpt": "agree: datasheet p.430 lists UARTFR with the SVD offset/address (offset 0x18, address 0x40034018)",
+    "ts": "2026-10-26T21:00:31.831Z",
+    "trust": "derived"
+  },
+  {
+    "id": "E9",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#UART0.UARTIBRD",
+    "excerpt": "UART0.UARTIBRD: address 0x40034024 (offset 0x24)",
+    "ts": "2026-10-26T21:00:31.834Z",
+    "trust": "vendor-official",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E10",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.430",
+    "excerpt": "4.2.8. List of Registers The UART0 and UART1 registers start at base addresses of 0x40034000 and 0x40038000 respectively (defined as UART0_BASE and UART1_BASE in SDK). Table 425. List of UART registers Offset Name Info 0x000 UARTDR Data Reg …[clipped]",
+    "ts": "2026-10-26T21:00:31.835Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E11",
+    "kind": "svd",
+    "source": "cross_check_register",
+    "excerpt": "agree: datasheet p.430 lists UARTIBRD with the SVD offset/address (offset 0x24, address 0x40034024)",
+    "ts": "2026-10-26T21:00:31.837Z",
+    "trust": "derived"
+  },
+  {
+    "id": "E12",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.433",
+    "excerpt": "Description Integer Baud Rate Register, UARTIBRD Table 430. UARTIBRD Register Bits Description Type Reset 31:16 Reserved. - - 15:0 BAUD_DIVINT: The integer baud rate divisor. These bits are cleared to 0 on reset. RW 0x0000 UART: UARTFBRD Re …[clipped]",
+    "ts": "2026-10-26T21:00:31.845Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E13",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.422",
+    "excerpt": "4.2.3.2.1. Fractional baud rate divider The baud rate divisor is a 22-bit number consisting of a 16-bit integer and a 6-bit fractional part. This is used by the baud rate generator to determine the bit period. The fractional baud rate divid …[clipped]",
+    "ts": "2026-10-26T21:00:31.848Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E14",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.433",
+    "excerpt": "Description Integer Baud Rate Register, UARTIBRD Table 430. UARTIBRD Register Bits Description Type Reset 31:16 Reserved. - - 15:0 BAUD_DIVINT: The integer baud rate divisor. These bits are cleared to 0 on reset. RW 0x0000 UART: UARTFBRD Re …[clipped]",
+    "ts": "2026-10-26T21:00:31.855Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E15",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.430",
+    "excerpt": "4.2.8. List of Registers The UART0 and UART1 registers start at base addresses of 0x40034000 and 0x40038000 respectively (defined as UART0_BASE and UART1_BASE in SDK). Table 425. List of UART registers Offset Name Info 0x000 UARTDR Data Reg …[clipped]",
+    "ts": "2026-10-26T21:00:31.858Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E16",
+    "kind": "datasheet",
+    "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf p.429",
+    "excerpt": "d_fbrd = 0; 167 } else { 168 baud_fbrd = (baud_rate_div & 0x7f) >> 1; 169 } 170 171 uart_get_hw(uart)->ibrd = baud_ibrd; 172 uart_get_hw(uart)->fbrd = baud_fbrd; 173 174 // PL011 needs a (dummy) LCR_H write to latch in the divisors. 175 //  …[clipped]",
+    "ts": "2026-10-26T21:00:31.863Z",
+    "trust": "vendor-official",
+    "sha256": "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c"
+  },
+  {
+    "id": "E17",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#UART0",
+    "excerpt": "Generated include/gen/uart0_regs.h for RP2040 UART0 @ 0x40034000: 22 registers, 99 fields, 22 struct members",
+    "ts": "2026-10-26T21:00:31.865Z",
+    "trust": "derived",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E18",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#RESETS",
+    "excerpt": "Generated include/gen/resets_regs.h for RP2040 RESETS @ 0x4000C000: 3 registers, 75 fields, 3 struct members",
+    "ts": "2026-10-26T21:00:31.872Z",
+    "trust": "derived",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E19",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd#IO_BANK0",
+    "excerpt": "Generated include/gen/io_bank0_regs.h for RP2040 IO_BANK0 @ 0x40014000: 100 registers, 1590 fields, 100 struct members",
+    "ts": "2026-10-26T21:00:31.877Z",
+    "trust": "derived",
+    "sha256": "1c72330127ae097c8c9a3661b509fcb9a94826d76a5c0d7e259eb605ddd7b0a6"
+  },
+  {
+    "id": "E20",
+    "kind": "build",
+    "source": "python -m ziglang cc -c include/gen/uart0_regs.h",
+    "excerpt": "exit 0\n",
+    "ts": "2026-10-26T21:00:33.179Z",
+    "trust": "measured"
+  },
+  {
+    "id": "E21",
+    "kind": "build",
+    "source": "python -m ziglang cc -c include/gen/resets_regs.h",
+    "excerpt": "exit 0\n",
+    "ts": "2026-10-26T21:00:34.516Z",
+    "trust": "measured"
+  },
+  {
+    "id": "E22",
+    "kind": "build",
+    "source": "python -m ziglang cc -c include/gen/io_bank0_regs.h",
+    "excerpt": "exit 0\n",
+    "ts": "2026-10-26T21:00:36.076Z",
+    "trust": "measured"
+  },
+  {
+    "id": "E23",
+    "kind": "build",
+    "source": "zig cc -target thumb-freestanding-eabi -mcpu=cortex_m0plus -c src/uart0.c",
+    "excerpt": "exit 0; object 1628 bytes\n",
+    "ts": "2026-10-26T21:00:36.969Z",
+    "trust": "measured"
+  }
+]

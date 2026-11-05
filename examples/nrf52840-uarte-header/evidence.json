@@ -1,0 +1,37 @@
+[
+  {
+    "id": "E1",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/cmsis-svd/cmsis-svd-data/main/data/Nordic/nrf52840.svd",
+    "excerpt": "Parsed nrf52840: 73 peripherals, 2140 registers",
+    "ts": "2026-10-26T21:00:40.447Z",
+    "trust": "community-mirror",
+    "sha256": "058bce5cc7167edbd2372f33387eeb4e4e08b147a3ff1e2c8ec56bccdda2ba92"
+  },
+  {
+    "id": "E2",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/cmsis-svd/cmsis-svd-data/main/data/Nordic/nrf52840.svd#UARTE0.BAUDRATE",
+    "excerpt": "nrf52840 UARTE0.BAUDRATE: address 0x40002524 (base 0x40002000 + offset 0x524), 32 bit, reset 0x04000000, access read-write\n  Baud rate. Accuracy depends on the HFCLK source selected.\n    [31:0] BAUDRATE — Baud rate {0x0004F000=Baud1200, 0x0009D000=Baud2400, 0x0013B000=Baud4800, 0x00275000=Baud9600, 0x003AF000=Baud14400, 0x004EA000=Baud19200, 0x0075C000=Baud28800, 0x00800000=Baud31250, …}",
+    "ts": "2026-10-26T21:00:40.450Z",
+    "trust": "community-mirror",
+    "sha256": "058bce5cc7167edbd2372f33387eeb4e4e08b147a3ff1e2c8ec56bccdda2ba92"
+  },
+  {
+    "id": "E3",
+    "kind": "svd",
+    "source": "https://raw.githubusercontent.com/cmsis-svd/cmsis-svd-data/main/data/Nordic/nrf52840.svd#UARTE0",
+    "excerpt": "Generated include/gen/uarte0_regs.h for nrf52840 UARTE0 @ 0x40002000: 34 registers, 78 fields, 34 struct members",
+    "ts": "2026-10-26T21:00:40.453Z",
+    "trust": "derived",
+    "sha256": "058bce5cc7167edbd2372f33387eeb4e4e08b147a3ff1e2c8ec56bccdda2ba92"
+  },
+  {
+    "id": "E4",
+    "kind": "build",
+    "source": "python -m ziglang cc -c include/gen/uarte0_regs.h",
+    "excerpt": "exit 0\n",
+    "ts": "2026-10-26T21:00:42.385Z",
+    "trust": "measured"
+  }
+]

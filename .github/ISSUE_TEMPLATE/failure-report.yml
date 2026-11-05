@@ -1,0 +1,54 @@
+name: Failure report (wrong or unsupported answer)
+description: The assistant stated something false or unsupported, or cited evidence that does not contain the value.
+labels: [failure-report]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of failure?
+      options:
+        - Invented register or peripheral
+        - Wrong address or value
+        - Citation does not support the claim
+        - Audit missed a bad claim (false negative)
+        - Audit flagged a good claim (false positive)
+        - Cross-check gave the wrong verdict
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: board
+    attributes:
+      label: Board and MCU
+      placeholder: Raspberry Pi Pico / RP2040
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What you asked
+    validations:
+      required: true
+  - type: textarea
+    id: answer
+    attributes:
+      label: What it answered
+    validations:
+      required: true
+  - type: textarea
+    id: truth
+    attributes:
+      label: What is actually true, and your source
+      description: Link the vendor document and page. Please do not paste whole datasheets.
+    validations:
+      required: true
+  - type: textarea
+    id: ledger
+    attributes:
+      label: Evidence ledger excerpt
+      description: From "Aletheon - Show Evidence Ledger". Remove anything confidential.
+      render: json
+  - type: input
+    id: version
+    attributes:
+      label: Aletheon version and model used

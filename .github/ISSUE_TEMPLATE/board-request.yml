@@ -1,0 +1,38 @@
+name: Board or chip request
+description: Ask for a new board, or fix a registry entry.
+labels: [board]
+body:
+  - type: input
+    id: board
+    attributes:
+      label: Board and MCU
+    validations:
+      required: true
+  - type: input
+    id: datasheet
+    attributes:
+      label: Vendor datasheet or reference manual URL
+    validations:
+      required: true
+  - type: input
+    id: svd
+    attributes:
+      label: SVD or CMSIS-Pack URL
+      description: The vendor's own if possible.
+  - type: dropdown
+    id: toolchain
+    attributes:
+      label: Toolchains you use
+      multiple: true
+      options:
+        - PlatformIO
+        - arduino-cli
+        - ESP-IDF
+        - Zephyr
+        - other
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Can you send a PR?
+      options:
+        - label: Yes, I can add the registry entry

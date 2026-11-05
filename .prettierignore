@@ -1,0 +1,11 @@
+dist/
+node_modules/
+hdrs/
+evidence/
+examples/**/TRANSCRIPT.md
+examples/**/evidence.json
+examples/**/include/
+**/.aletheon/
+site/assets/
+package-lock.json
+*.md

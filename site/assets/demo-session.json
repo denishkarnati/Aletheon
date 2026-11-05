@@ -1,0 +1,63 @@
+[
+  {
+    "tool": "index_svd",
+    "args": {
+      "source": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd"
+    },
+    "text": "[E1] parsed RP2040: 37 peripherals, 1181 registers",
+    "ms": 326
+  },
+  {
+    "tool": "index_datasheet",
+    "args": {
+      "source": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf"
+    },
+    "text": "[E2] indexed 642 pages from https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf; keyword-only (no embedding model configured)",
+    "ms": 4404
+  },
+  {
+    "tool": "lookup_register",
+    "args": {
+      "device": "RP2040",
+      "peripheral": "UART0",
+      "register": "UARTFR",
+      "field": "BUSY"
+    },
+    "text": "[E3] (vendor-official source) RP2040 UART0.UARTFR: address 0x40034018 (base 0x40034000 + offset 0x018), 32 bit, reset 0x00000090, access read-write\n  Flag Register, UARTFR\n    [3:3] BUSY (read-only) — UART busy. If this bit is set to 1, the UART is busy transmitting data. This bit remains set until the complete byte, in",
+    "ms": 2
+  },
+  {
+    "tool": "cross_check_register",
+    "args": {
+      "peripheral": "UART0",
+      "register": "UARTFR",
+      "device": "RP2040"
+    },
+    "text": "[E6] AGREE: datasheet p.430 lists UARTFR with the SVD offset/address (offset 0x18, address 0x40034018)\nSVD evidence [E4] (vendor-official source); datasheet evidence [E5]",
+    "ms": 6
+  },
+  {
+    "tool": "generate_regs_header",
+    "args": {
+      "peripheral": "UART0"
+    },
+    "text": "[E7] Generated include/gen/uart0_regs.h for RP2040 UART0 @ 0x40034000: 22 registers, 99 fields, 22 struct members. Include it as #include \"gen/uart0_regs.h\". Run check_header, then write the driver using only its macros.",
+    "ms": 4
+  },
+  {
+    "tool": "check_header",
+    "args": {
+      "path": "include/gen/uart0_regs.h"
+    },
+    "text": "[E8] python compile+layout check exit 0\n(clean)",
+    "ms": 709
+  },
+  {
+    "tool": "audit_claims",
+    "args": {
+      "text": "UART0 UARTFR is at 0x40034018 [E4]. The UART0 data register is at 0x40034004. The core runs at 266 MHz [E99]."
+    },
+    "text": "claims with hardware values: 3; supported 1, unsupported 0, uncited 1, unknown citation 1, declared UNVERIFIED 0\n- UNCITED: \"The UART0 data register is at 0x40034004.\"\n- UNKNOWN-CITATION: \"The core runs at 266 MHz [E99].\"",
+    "ms": 2
+  }
+]

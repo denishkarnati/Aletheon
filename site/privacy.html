@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy and legal · Aletheon</title>
+    <meta name="description" content="What this website does and does not collect, who owns the part names and data shown here, and how to reach us." />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07080a;
+        --bg1: #0b0d10;
+        --bg2: #0f1216;
+        --ln: rgba(255, 255, 255, 0.075);
+        --ln2: rgba(255, 255, 255, 0.14);
+        --tx: #f4f5f7;
+        --tx2: #a4a9b3;
+        --tx3: #6c727d;
+        --ok: #7be0ae;
+        --warn: #e9b866;
+        --sans: 'Segoe UI Variable Display', 'Segoe UI Variable Text', 'SF Pro Display', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        --mono: 'Cascadia Code', 'Cascadia Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--tx);
+        font: 16px/1.7 var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .wrap {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.top {
+        padding: 28px 0;
+        border-bottom: 1px solid var(--ln);
+      }
+      header.top a {
+        font-weight: 600;
+        text-decoration: none;
+      }
+      h1 {
+        font-size: clamp(34px, 6vw, 56px);
+        letter-spacing: -0.045em;
+        line-height: 1.05;
+        margin: 56px 0 14px;
+        font-weight: 600;
+      }
+      h2 {
+        font-size: 22px;
+        letter-spacing: -0.02em;
+        margin: 44px 0 10px;
+        font-weight: 600;
+      }
+      p,
+      li {
+        color: var(--tx2);
+      }
+      p {
+        margin: 10px 0;
+      }
+      ul {
+        margin: 10px 0 10px 22px;
+      }
+      li {
+        margin: 6px 0;
+      }
+      .note {
+        border: 1px solid var(--ln2);
+        border-radius: 14px;
+        background: var(--bg1);
+        padding: 14px 18px;
+        font-size: 14.5px;
+        margin: 22px 0;
+      }
+      .yes {
+        color: var(--ok);
+      }
+      footer {
+        margin: 70px 0 60px;
+        padding-top: 24px;
+        border-top: 1px solid var(--ln);
+        color: var(--tx3);
+        font-size: 13px;
+      }
+      :focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap"><a href="index.html">← Aletheon</a></div>
+    </header>
+    <main class="wrap">
+      <h1>Privacy and legal</h1>
+      <p>A plain-language description of this website as it is today. It is not legal advice and it is not a contract.</p>
+
+      <h2>What this website collects</h2>
+      <p><b class="yes">Nothing, by us.</b> In concrete terms, this site:</p>
+      <ul>
+        <li>has no accounts, sign-up forms or email collection;</li>
+        <li>sets no cookies and stores nothing in your browser;</li>
+        <li>loads no analytics, advertising, tracking pixels or session-recording tools;</li>
+        <li>
+          loads no third-party scripts or fonts: the fonts are the ones already installed on your device, and every script and file comes from this same site;
+        </li>
+        <li>
+          runs the Device Lab, the claim auditor, the Chip Atlas and the Parts catalog entirely in your browser. What you type there, including code you write
+          in the Device Lab, is not sent to us.
+        </li>
+      </ul>
+      <p>
+        Like any web host, whoever serves these pages can see your IP address and which pages you requested, in the host's own access logs. We do not receive,
+        combine or analyse those logs. Links on this site lead to other websites (vendor sites, GitHub); they have their own privacy practices.
+      </p>
+
+      <h2>Aletheon Cloud (not open yet)</h2>
+      <p>
+        A hosted service with accounts, teams and shared evidence is in development. It will have its own privacy notice, terms and age requirements, published
+        before it opens, and this page will be updated then. Nothing on this page describes that service.
+      </p>
+
+      <h2>Part data, names and datasheets</h2>
+      <ul>
+        <li>
+          The part list in the Parts catalog is a modified excerpt of the
+          <a href="https://gitlab.com/kicad/libraries/kicad-symbols" rel="noopener">KiCad symbol libraries</a>, licensed
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" rel="noopener">CC BY-SA 4.0</a>. See
+          <a href="assets/PARTS-DATA-LICENSE.md">PARTS-DATA-LICENSE.md</a> for what was changed.
+        </li>
+        <li>
+          Device models are written in our own words from public datasheets, with short quotes (never more than 15 words) and the page they come from. Datasheet
+          PDFs and figures are not copied or hosted here; links open the manufacturer's own copy.
+        </li>
+        <li>
+          Part names, company names and logos belong to their owners. Aletheon is independent and is not affiliated with, endorsed by or sponsored by Texas
+          Instruments, Analog Devices, or any other company named here.
+        </li>
+        <li>Manufacturer contact links are public company pages only. We list no personal names, emails or phone numbers.</li>
+      </ul>
+
+      <h2>Accuracy</h2>
+      <p>
+        The data is provided as is. Registers, addresses, voltages and formulas can be wrong or out of date, and the simulator is a behavioral model, not a
+        circuit simulation. Always check the manufacturer's current datasheet before you design, build or order anything.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        For privacy questions, corrections or takedown requests, open an issue at
+        <a href="https://github.com/denishkarnati/aletheon/issues">the project's GitHub issue tracker</a>.
+      </p>
+
+      <div class="note">Last updated 2 November 2026. If this site starts collecting anything (analytics, sign-ups, email), this page will change first.</div>
+      <footer>Aletheon · open source under Apache-2.0 · <a href="index.html">Home</a></footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+{
+  "checked": "2026-10-28",
+  "note": "Company-level public pages only (official contact, support, sales, documentation and community links). No personal names, emails or phone numbers. 'how' says how each link was confirmed: homepage = found as a link on the vendor's own homepage; browser = read in a normal browser session where the site blocks scripts; script = answered HTTP 200 to site/tools/check-vendor-links.mjs.",
+  "vendors": [
+    {
+      "name": "Texas Instruments",
+      "website": "https://www.ti.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact us", "url": "https://www.ti.com/about-ti/contact-us.html", "how": "browser" },
+        { "kind": "Support", "label": "Support", "url": "https://www.ti.com/support.html", "how": "browser" },
+        { "kind": "Support", "label": "Customer support center", "url": "https://www.ti.com/support/customer-support-center.html", "how": "browser" },
+        { "kind": "Community", "label": "TI E2E design support forums", "url": "https://e2e.ti.com/", "how": "browser" }
+      ]
+    },
+    {
+      "name": "Analog Devices",
+      "website": "https://www.analog.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact us", "url": "https://www.analog.com/en/contact-us.html", "how": "browser" },
+        { "kind": "Support", "label": "Support", "url": "https://www.analog.com/en/support.html", "how": "browser" },
+        {
+          "kind": "Sales",
+          "label": "Sales and distribution",
+          "url": "https://www.analog.com/en/who-we-are/corporate-information/sales-distribution.html",
+          "how": "browser"
+        },
+        { "kind": "Community", "label": "EngineerZone", "url": "https://ez.analog.com/", "how": "browser" }
+      ]
+    },
+    {
+      "name": "STMicroelectronics",
+      "website": "https://www.st.com/",
+      "links": [
+        { "kind": "Contact", "label": "Sales offices and distributors", "url": "https://www.st.com/content/st_com/en/contact-us.html", "how": "homepage" },
+        { "kind": "Support", "label": "Support", "url": "https://www.st.com/content/st_com/en/support/support-home.html", "how": "homepage" },
+        { "kind": "Community", "label": "ST Community", "url": "https://community.st.com/", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "Microchip",
+      "website": "https://www.microchip.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact us", "url": "https://www.microchip.com/en-us/about/contact-us", "how": "homepage" },
+        { "kind": "Support", "label": "Support", "url": "https://www.microchip.com/en-us/support", "how": "homepage" },
+        {
+          "kind": "Sales",
+          "label": "Global sales and distribution",
+          "url": "https://www.microchip.com/en-us/about/global-sales-and-distribution",
+          "how": "homepage"
+        },
+        { "kind": "Community", "label": "Microchip Forums", "url": "https://forum.microchip.com/", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "NXP",
+      "website": "https://www.nxp.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact", "url": "https://www.nxp.com/company/contact-us:CONTACTUS", "how": "homepage" },
+        {
+          "kind": "Support",
+          "label": "Engineering services",
+          "url": "https://www.nxp.com/support/support/nxp-engineering-services:SW-SUPPORT",
+          "how": "homepage"
+        },
+        { "kind": "Community", "label": "NXP Community", "url": "https://community.nxp.com/", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "Infineon",
+      "website": "https://www.infineon.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact", "url": "https://www.infineon.com/contact-us", "how": "script" },
+        { "kind": "Support", "label": "Support", "url": "https://www.infineon.com/support", "how": "script" }
+      ]
+    },
+    {
+      "name": "onsemi",
+      "website": "https://www.onsemi.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact sales", "url": "https://www.onsemi.com/support/company-contacts/contact-sales", "how": "homepage" },
+        { "kind": "Support", "label": "Technical support center", "url": "https://www.onsemi.com/support/technical-support-center", "how": "homepage" },
+        { "kind": "Sales", "label": "Distributor network", "url": "https://www.onsemi.com/support/distributor-network", "how": "homepage" },
+        { "kind": "Community", "label": "Community forums", "url": "https://community.onsemi.com/s/topicanddiscussion", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "Silicon Labs",
+      "website": "https://www.silabs.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact us", "url": "https://www.silabs.com/about-us/contact-us", "how": "homepage" },
+        { "kind": "Support", "label": "Support", "url": "https://www.silabs.com/support", "how": "homepage" },
+        { "kind": "Community", "label": "Community", "url": "https://community.silabs.com/", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "Renesas",
+      "website": "https://www.renesas.com/",
+      "links": [
+        { "kind": "Support", "label": "Technical support", "url": "https://www.renesas.com/en/support", "how": "homepage" },
+        { "kind": "Docs", "label": "Documents and downloads", "url": "https://www.renesas.com/en/support/document-search", "how": "homepage" },
+        { "kind": "Community", "label": "Support communities", "url": "https://community.renesas.com/", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "Espressif",
+      "website": "https://www.espressif.com/",
+      "links": [
+        { "kind": "Docs", "label": "Technical documents", "url": "https://www.espressif.com/en/support/documents/technical-documents", "how": "homepage" },
+        { "kind": "Community", "label": "ESP32 forum", "url": "https://www.esp32.com/", "how": "homepage" }
+      ]
+    },
+    {
+      "name": "Nordic Semiconductor",
+      "website": "https://www.nordicsemi.com/",
+      "links": [{ "kind": "Community", "label": "DevZone", "url": "https://devzone.nordicsemi.com/", "how": "browser" }]
+    },
+    {
+      "name": "Raspberry Pi",
+      "website": "https://www.raspberrypi.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact us", "url": "https://www.raspberrypi.com/contact/", "how": "browser" },
+        { "kind": "Docs", "label": "Documentation", "url": "https://www.raspberrypi.com/documentation/", "how": "browser" },
+        { "kind": "Community", "label": "Forums", "url": "https://forums.raspberrypi.com/", "how": "browser" }
+      ]
+    },
+    {
+      "name": "Allegro",
+      "website": "https://www.allegromicro.com/",
+      "links": [
+        { "kind": "Contact", "label": "Contact us", "url": "https://www.allegromicro.com/en/about-allegro/contact-us", "how": "homepage" },
+        { "kind": "Support", "label": "Design support", "url": "https://www.allegromicro.com/en/design-support", "how": "homepage" }
+      ]
+    }
+  ]
+}

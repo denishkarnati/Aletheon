@@ -1,0 +1,115 @@
+{
+  "$schema": "./boards.schema.json",
+  "boards": [
+    {
+      "id": "esp32-s3-devkitc-1",
+      "name": "ESP32-S3-DevKitC-1",
+      "vendor": "Espressif",
+      "mcu": "ESP32-S3",
+      "arch": "xtensa-lx7",
+      "toolchains": ["esp-idf", "platformio", "arduino-cli"],
+      "pioBoard": "esp32-s3-devkitc-1",
+      "fqbn": "esp32:esp32:esp32s3",
+      "baud": 115200,
+      "svd": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32s3.svd",
+      "docs": [
+        {
+          "title": "ESP32-S3 Datasheet",
+          "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf"
+        },
+        {
+          "title": "ESP32-S3 Technical Reference Manual",
+          "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3_technical_reference_manual_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "esp32-devkitc",
+      "name": "ESP32-DevKitC",
+      "vendor": "Espressif",
+      "mcu": "ESP32",
+      "arch": "xtensa-lx6",
+      "toolchains": ["esp-idf", "platformio", "arduino-cli"],
+      "pioBoard": "esp32dev",
+      "fqbn": "esp32:esp32:esp32",
+      "baud": 115200,
+      "svd": "https://raw.githubusercontent.com/espressif/svd/main/svd/esp32.svd",
+      "docs": [
+        {
+          "title": "ESP32 Datasheet",
+          "url": "https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf"
+        }
+      ]
+    },
+    {
+      "id": "rpi-pico",
+      "name": "Raspberry Pi Pico",
+      "vendor": "Raspberry Pi",
+      "mcu": "RP2040",
+      "arch": "cortex-m0+",
+      "toolchains": ["platformio", "arduino-cli"],
+      "pioBoard": "pico",
+      "fqbn": "rp2040:rp2040:rpipico",
+      "baud": 115200,
+      "svd": "https://raw.githubusercontent.com/raspberrypi/pico-sdk/master/src/rp2040/hardware_regs/RP2040.svd",
+      "docs": [
+        {
+          "title": "RP2040 Datasheet",
+          "url": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf"
+        }
+      ]
+    },
+    {
+      "id": "arduino-uno",
+      "name": "Arduino Uno R3",
+      "vendor": "Arduino",
+      "mcu": "ATmega328P",
+      "arch": "avr",
+      "toolchains": ["arduino-cli", "platformio"],
+      "pioBoard": "uno",
+      "fqbn": "arduino:avr:uno",
+      "baud": 9600,
+      "docs": [
+        {
+          "title": "ATmega328P Datasheet",
+          "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nucleo-f401re",
+      "name": "STM32 Nucleo-F401RE",
+      "vendor": "STMicroelectronics",
+      "mcu": "STM32F401RE",
+      "arch": "cortex-m4f",
+      "toolchains": ["platformio", "arduino-cli"],
+      "pioBoard": "nucleo_f401re",
+      "fqbn": "STMicroelectronics:stm32:Nucleo_64",
+      "baud": 115200,
+      "svd": "https://raw.githubusercontent.com/modm-io/cmsis-svd-stm32/main/stm32f4/STM32F401.svd",
+      "docs": [
+        {
+          "title": "STM32F401RE Datasheet",
+          "url": "https://www.st.com/resource/en/datasheet/stm32f401re.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nrf52840-dk",
+      "name": "nRF52840 DK",
+      "vendor": "Nordic Semiconductor",
+      "mcu": "nRF52840",
+      "arch": "cortex-m4f",
+      "toolchains": ["platformio"],
+      "pioBoard": "nrf52840_dk",
+      "baud": 115200,
+      "svd": "https://raw.githubusercontent.com/cmsis-svd/cmsis-svd-data/main/data/Nordic/nrf52840.svd",
+      "docs": [
+        {
+          "title": "nRF52840 Product Specification",
+          "url": "https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html"
+        }
+      ]
+    }
+  ]
+}
