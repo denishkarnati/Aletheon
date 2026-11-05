@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logic Analyzer · Aletheon</title>
+    <meta
+      name="description"
+      content="See I2C, SPI, UART, PWM and GPIO as waveforms and decode them back into bytes. Open a Device Lab or IoT Bench bus log, or import a real logic-analyzer CSV, and debug a NACK."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Logic Analyzer · Aletheon" />
+    <meta property="og:description" content="Waveforms and protocol decoding for I2C, SPI, UART, PWM and GPIO, in the browser." />
+    <meta property="og:image" content="assets/og.png" />
+    <link rel="stylesheet" href="assets/platform.css" />
+    <link rel="stylesheet" href="assets/nav.css" />
+  </head>
+  <body>
+    <a class="skip" href="#tabs">Skip to the analyzer</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links">
+        <a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html">Bench</a
+        ><a href="analyzer.html" class="on">Analyzer</a>
+      </div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">Logic Analyzer</div>
+          <h1>See the bus. <em>Read the bytes.</em></h1>
+          <p class="sub">
+            Every transaction from the Device Lab and the IoT Bench can be drawn as the clock and data lines it would put on a wire, then decoded back by a
+            separate decoder. Step through a NACK, change the SPI mode and watch the data shift, set the wrong baud rate, or import a CSV from a real logic
+            analyzer.
+          </p>
+          <p class="honest">
+            <b>What this is, and is not.</b> Ideal digital levels: edges are instant and clean. It does not model rise times, ringing, glitches, bus
+            capacitance, pull-up values, clock stretching or whether real hardware would meet its timing. When a transaction comes from the Bench or Lab, the
+            waveform is generated from the byte log, and the decoder reading it back is a check that the two agree. Imported CSVs are decoded as they are.
+          </p>
+          <p class="sub" id="anaError" style="color: var(--bad)"></p>
+        </div>
+      </header>
+
+      <div class="wrap">
+        <div class="tabs" id="tabs" role="tablist" aria-label="Protocol">
+          <button type="button" id="tab-i2c" role="tab">I²C</button>
+          <button type="button" id="tab-spi" role="tab">SPI</button>
+          <button type="button" id="tab-uart" role="tab">UART</button>
+          <button type="button" id="tab-pwm" role="tab">PWM &amp; GPIO</button>
+        </div>
+
+        <section id="sec-i2c" aria-label="I2C decoder">
+          <div class="grid2">
+            <div class="card">
+              <h3>Source</h3>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="i2cSrc" aria-label="Where the transactions come from"></select></div>
+              <div id="genOpts">
+                <div class="fld" style="grid-template-columns: 1fr"><select id="sclHz" aria-label="Clock speed"></select></div>
+                <label class="chk"
+                  ><input type="checkbox" id="rstart" /><span
+                    >Use a repeated START between a write and the read that follows it (no STOP in between)</span
+                  ></label
+                >
+              </div>
+              <div id="csvBox">
+                <textarea id="csvText" class="ta" spellcheck="false" aria-label="CSV capture"></textarea>
+                <p class="hint">
+                  CSV from a logic analyzer: a header row (<span class="mono">Time [s],SCL,SDA</span>), then one row per change with the time in seconds and a 0
+                  or 1 per channel. Up to 200,000 rows. It stays in your browser; nothing is uploaded.
+                </p>
+                <div class="row">
+                  <input type="file" id="csvFile" accept=".csv,text/csv,text/plain" aria-label="Load a CSV file" />
+                  <button class="btn ghost sm" type="button" id="csvGo">Decode</button>
+                </div>
+                <div id="cols" class="row">
+                  <label for="colScl">SCL is</label
+                  ><select id="colScl"></select
+                  ><label for="colSda">SDA is</label
+                  ><select id="colSda"></select>
+                </div>
+              </div>
+              <p class="hint bad-text" id="i2cMsg"></p>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>What it found</h3>
+              <p class="note" id="i2cSummary" style="margin-top: 0"></p>
+              <p class="note" id="i2cWarn" style="color: var(--warn)"></p>
+              <p class="hint">
+                Try "Debug a NACK": the first transaction goes to 0x49, nothing answers, and the SDA line stays high on the ninth clock. The part is strapped to
+                answer at 0x48.
+              </p>
+            </div>
+          </div>
+          <div class="card sw">
+            <h3>Waveform</h3>
+            <div id="wave-i2c"></div>
+          </div>
+          <div class="card sw">
+            <h3>Decoded transactions <span>with the model's own explanation where there is one</span></h3>
+            <div class="tw">
+              <table id="i2cTbl">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>start (us)</th>
+                    <th></th>
+                    <th>addr</th>
+                    <th>bytes</th>
+                    <th>result</th>
+                    <th>what the model says</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-spi" aria-label="SPI decoder" style="display: none">
+          <div class="grid2">
+            <div class="card">
+              <h3>Bus <span>your assumptions</span></h3>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="spiMode" aria-label="SPI mode of the bus"></select></div>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="spiHz" aria-label="Clock"></select></div>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="spiDev" aria-label="Device"></select></div>
+              <div class="fld" style="grid-template-columns: 1fr">
+                <label for="spiMosi" class="hint">MOSI bytes (hex)</label><input id="spiMosi" type="text" />
+              </div>
+              <div class="fld" style="grid-template-columns: 1fr">
+                <label for="spiMiso" class="hint">MISO bytes (hex, only for "type it yourself")</label><input id="spiMiso" type="text" />
+              </div>
+              <div class="row">
+                <button class="btn ghost sm" type="button" id="spiPreset1">Write 0x5A to register 0x10</button>
+                <button class="btn ghost sm" type="button" id="spiPreset2">Read register 0x10</button>
+                <button class="btn ghost sm" type="button" id="spiPreset3">Read registers 0 and 1</button>
+              </div>
+              <p class="hint bad-text" id="spiMsg"></p>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Decoder</h3>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="spiDmode" aria-label="Mode the decoder assumes"></select></div>
+              <p class="note" id="spiSummary"></p>
+              <p class="hint">
+                The generic device is invented for teaching: command 0x03 reads, 0x02 writes, then an address, then data. It is not any real part. Set the
+                decoder to a different mode than the bus and the bytes shift or flip, which is exactly what a wrong CPOL/CPHA looks like on a real board.
+              </p>
+            </div>
+          </div>
+          <div class="card sw">
+            <h3>Waveform</h3>
+            <div id="wave-spi"></div>
+          </div>
+          <div class="card sw">
+            <h3>Bytes</h3>
+            <div class="tw">
+              <table id="spiTbl">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>MOSI sent</th>
+                    <th>MOSI decoded</th>
+                    <th>MISO driven</th>
+                    <th>MISO decoded</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-uart" aria-label="UART decoder" style="display: none">
+          <div class="grid2">
+            <div class="card">
+              <h3>Sender</h3>
+              <div class="fld" style="grid-template-columns: 1fr">
+                <label for="uartText" class="hint">Text to send (up to 16 characters)</label><input id="uartText" type="text" maxlength="16" />
+              </div>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="uartBaud" aria-label="Sender baud rate"></select></div>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="uartData" aria-label="Data bits"></select></div>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="uartPar" aria-label="Parity"></select></div>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="uartStop" aria-label="Stop bits"></select></div>
+              <p class="hint bad-text" id="uartMsg"></p>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Receiver</h3>
+              <div class="fld" style="grid-template-columns: 1fr"><select id="uartRx" aria-label="Receiver baud rate"></select></div>
+              <p class="note" id="uartSummary"></p>
+              <p class="hint">
+                Set the receiver to a different baud rate than the sender to see garbage and framing errors. A receiver within about 3 % of the right rate still
+                reads an 8N1 stream; much more than that and the sample points drift out of the bit.
+              </p>
+            </div>
+          </div>
+          <div class="card sw">
+            <h3>Waveform</h3>
+            <div id="wave-uart"></div>
+          </div>
+          <div class="card sw">
+            <h3>Frames</h3>
+            <div class="tw">
+              <table id="uartTbl">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>value</th>
+                    <th>char</th>
+                    <th>status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="sec-pwm" aria-label="PWM and GPIO" style="display: none">
+          <div class="grid2">
+            <div class="card">
+              <h3>PWM generator</h3>
+              <div class="fld"><label for="pwmHz">Frequency (Hz)</label><input id="pwmHz" type="number" value="1000" min="1" max="1000000" /></div>
+              <div class="fld"><label for="pwmDuty">Duty (%)</label><input id="pwmDuty" type="number" value="25" min="0" max="100" step="0.5" /></div>
+              <div class="row">
+                <button class="btn ghost sm" type="button" id="pwmLed">LED dimmer: 1 kHz, 25 %</button>
+                <button class="btn ghost sm" type="button" id="pwmServo">Servo: 50 Hz, 1.5 ms</button>
+                <button class="btn ghost sm" type="button" id="pwmMotor">Motor: 20 kHz, 80 %</button>
+              </div>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Measured from the edges</h3>
+              <p class="note" id="pwmSummary" style="margin-top: 0"></p>
+            </div>
+          </div>
+          <div class="card sw">
+            <h3>PWM waveform</h3>
+            <div id="wave-pwm"></div>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <h3>GPIO: a bouncing button</h3>
+              <div class="fld"><label for="bounceN">Bounces</label><input id="bounceN" type="number" value="4" min="0" max="12" /></div>
+              <div class="fld"><label for="bounceSeed">Seed</label><input id="bounceSeed" type="number" value="3" min="0" max="99999" /></div>
+              <p class="note" id="bounceSummary"></p>
+            </div>
+            <div class="card">
+              <h3>Button waveform</h3>
+              <div id="wave-gpio"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="sec" aria-labelledby="h-nm">
+          <h2 id="h-nm">What this analyzer leaves out</h2>
+          <ul class="nm">
+            <li>Everything analog: edges are ideal, there is no noise, glitch, ringing, slow rise from a weak pull-up, or threshold voltage.</li>
+            <li>I²C clock stretching, arbitration, 10-bit addresses, the general-call address and multi-master buses. The decoder reads 7-bit addressing.</li>
+            <li>SPI chips with more than one chip select, daisy chains, dual and quad modes, and word sizes other than 8 bits.</li>
+            <li>UART with RS-232 voltage levels, flow control, 9-bit frames and automatic baud detection.</li>
+            <li>
+              Timing checks: nothing here tells you that your bus meets a part's setup, hold or rise-time limits. Use the datasheet and a real analyzer for
+              that.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <!-- chrome:footer -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <div class="brandline">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+                <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+                  <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+                </g>
+                <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+              >Aletheon
+            </div>
+            <p>
+              An evidence-grounded firmware assistant, with a free, open set of embedded-systems tools: a board atlas, a parts catalog, datasheet-checked device
+              models and IoT simulators.
+            </p>
+          </div>
+          <div>
+            <h4>Platform</h4>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a
+            ><a href="analyzer.html">Logic Analyzer</a>
+          </div>
+          <div>
+            <h4>Learn</h4>
+            <a href="index.html#install">Install the extension</a>
+          </div>
+          <div>
+            <h4>Project</h4>
+            <a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="privacy.html">Privacy and legal</a>
+          </div>
+        </div>
+        <div class="legal">
+          <p>
+            Open source under Apache-2.0. Aletheon is independent and is not affiliated with, sponsored by or endorsed by any chip vendor named on this site.
+            Part names and numbers belong to their owners. Simulators here are behavioral models, not circuit simulations, and never a substitute for the
+            current official datasheet or for testing on real hardware.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:footer -->
+
+    <script src="assets/devices-data.js"></script>
+    <script src="assets/devicecore.js"></script>
+    <script src="assets/simcore.js"></script>
+    <script src="assets/iotnodes.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/logiccore.js"></script>
+    <script src="assets/waveview.js"></script>
+    <script src="assets/analyzer.js"></script>
+  </body>
+</html>

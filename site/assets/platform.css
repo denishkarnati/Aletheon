@@ -1041,3 +1041,74 @@ code.i {
     gap: 8px;
   }
 }
+
+/* waveform viewer */
+svg.wave {
+  display: block;
+  width: 100%;
+  background: #080a0d;
+  border: 1px solid var(--ln);
+  border-radius: 12px;
+  cursor: crosshair;
+}
+svg.wave .tr {
+  fill: none;
+  stroke: var(--ok);
+  stroke-width: 1.6;
+  stroke-linejoin: miter;
+}
+svg.wave .gr {
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1;
+}
+svg.wave .tk,
+svg.wave .lb,
+svg.wave .cl {
+  font: 10.5px var(--mono);
+  fill: var(--tx3);
+}
+svg.wave .lb {
+  fill: var(--tx2);
+  font-weight: 600;
+}
+svg.wave .at {
+  font: 10.5px var(--mono);
+  fill: var(--tx);
+  pointer-events: none;
+}
+svg.wave .an {
+  fill: rgba(157, 185, 255, 0.14);
+  stroke: rgba(157, 185, 255, 0.5);
+}
+svg.wave .an.addr {
+  fill: rgba(123, 224, 174, 0.14);
+  stroke: rgba(123, 224, 174, 0.5);
+}
+svg.wave .an.tx {
+  fill: rgba(233, 184, 102, 0.1);
+  stroke: rgba(233, 184, 102, 0.4);
+}
+svg.wave .an.nak {
+  fill: rgba(255, 123, 123, 0.16);
+  stroke: rgba(255, 123, 123, 0.6);
+}
+svg.wave .cur {
+  stroke: var(--warn);
+  stroke-dasharray: 3 3;
+  stroke-width: 1;
+}
+.sw {
+  margin-top: 12px;
+}
+textarea.ta {
+  width: 100%;
+  min-height: 110px;
+  background: #080a0d;
+  border: 1px solid var(--ln);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #d4d8e0;
+  font: 12.5px/1.6 var(--mono);
+  resize: vertical;
+}
+

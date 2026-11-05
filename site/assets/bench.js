@@ -7,7 +7,7 @@
   const core = window.__aletheonDevCore(window.DEVICES);
 
   const SPEEDS = [[1, '1×  (real time)'], [10, '10×'], [60, '60×  (1 min / s)'], [600, '600×  (10 min / s)'], [3600, '3600×  (1 h / s)']];
-  const HAS_ANALYZER = false; // flipped on when analyzer.html ships
+  const HAS_ANALYZER = true;
   const MAX_POINTS = 4000;
   const TRUTH_KEY = { temperature_c: 'temp', ain0_v: 'soil', bus_v: 'vbus', current_a: 'iload' };
   const PRESET_LABEL = { greenhouse: 'Greenhouse node (TMP117 + ADS1115)', pump: 'Pump monitor (INA226)', cell: 'Battery monitor (INA219)' };

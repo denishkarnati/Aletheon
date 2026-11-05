@@ -34,7 +34,10 @@
           <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
         >Aletheon</a
       >
-      <div class="links"><a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html" class="on">Bench</a></div>
+      <div class="links">
+        <a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html" class="on">Bench</a
+        ><a href="analyzer.html">Analyzer</a>
+      </div>
       <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
     </nav>
 
@@ -193,7 +196,10 @@
               Noise, accuracy and temperature drift of the sensors themselves (the only drift is the fault you inject). The part models are exact register
               arithmetic.
             </li>
-            <li>Bus timing at the clock-edge level: conversion time is modeled, but not SCL clock edges.</li>
+            <li>
+              Bus timing at the clock-edge level: conversion time is modeled, but not SCL clock edges (the
+              <a href="analyzer.html" style="text-decoration: underline">Analyzer</a> lays those out from the byte log).
+            </li>
             <li>The radio: no path loss, collisions, TCP retransmission, TLS handshakes or reconnect storms. "Loss" drops whole messages.</li>
             <li>MQTT QoS 2, persistent sessions, authentication, message size limits and broker clustering.</li>
             <li>The battery's real discharge curve, temperature and ageing: voltage is a straight line from full to empty with a fixed series resistance.</li>
@@ -224,7 +230,8 @@
           </div>
           <div>
             <h4>Platform</h4>
-            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a
+            ><a href="analyzer.html">Logic Analyzer</a>
           </div>
           <div>
             <h4>Learn</h4>

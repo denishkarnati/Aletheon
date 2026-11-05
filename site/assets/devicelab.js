@@ -7,7 +7,7 @@
   var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
   if (!DATA || !core) { $('out').textContent = 'The device data failed to load.'; return; }
 
-  var cur = null, inputs = {}, running = false, drafts = {};
+  var cur = null, inputs = {}, running = false, drafts = {}, lastBus = null;
   var hex2 = function (n) { return '0x' + n.toString(16).toUpperCase().padStart(2, '0'); };
   var RUN_LIMIT_MS = 2500;
 
@@ -104,6 +104,7 @@
       tr.appendChild(w); tb.appendChild(tr);
     });
     $('busMeta').textContent = (out.bus || []).length + ' events';
+    lastBus = out.bus && out.bus.length ? out.bus : null; $('toAna').disabled = !lastBus;
 
     var rb = $('regs').tBodies[0]; rb.textContent = '';
     (out.regs || []).forEach(function (r) {
@@ -122,7 +123,7 @@
     $('code').value = (!keepDraft && drafts[cur.id]) || cur.sample;
     renderSliders(); renderFacts();
     $('out').textContent = ''; $('out').appendChild(el('span', 'm', 'Press Run to execute the code.'));
-    $('bus').tBodies[0].textContent = ''; $('regs').tBodies[0].textContent = ''; $('runMeta').textContent = ''; $('busMeta').textContent = '';
+    $('bus').tBodies[0].textContent = ''; $('regs').tBodies[0].textContent = ''; $('runMeta').textContent = ''; $('busMeta').textContent = ''; lastBus = null; $('toAna').disabled = true;
     try { history.replaceState(null, '', '#' + cur.id); } catch (e) {}
   }
 
@@ -134,6 +135,11 @@
   }
 
   renderPicker();
+  $('toAna').addEventListener('click', function () {
+    if (!lastBus) return;
+    try { sessionStorage.setItem('aletheon.capture', JSON.stringify({ source: 'Device Lab (' + cur.part + ')', t: 0, events: lastBus.slice(0, 2000) })); } catch (e) { /* storage blocked: the Analyzer then opens without it */ }
+    window.location.href = 'analyzer.html#capture';
+  });
   $('run').addEventListener('click', run);
   $('reset').addEventListener('click', function () { drafts[cur.id] = ''; select(cur.id, true); });
   $('strap').addEventListener('change', function () { /* applied on the next run */ });
