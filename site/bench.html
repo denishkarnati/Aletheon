@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IoT Bench · Aletheon</title>
+    <meta
+      name="description"
+      content="Run a fleet of virtual sensor nodes in your browser. They read datasheet-checked TMP117, INA219, INA226 and ADS1115 models, spend battery energy, and publish to an MQTT-style broker. Inject faults and budget the power."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="IoT Bench · Aletheon" />
+    <meta property="og:description" content="Virtual sensor nodes, an MQTT-style broker, fault injection and a battery-life calculator, all in the browser." />
+    <meta property="og:image" content="assets/og.png" />
+    <link rel="stylesheet" href="assets/platform.css" />
+    <link rel="stylesheet" href="assets/nav.css" />
+  </head>
+  <body>
+    <a class="skip" href="#nodes">Skip to the nodes</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links"><a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html" class="on">Bench</a></div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">IoT Bench</div>
+          <h1>A fleet of sensor nodes, <em>in your browser.</em></h1>
+          <p class="sub">
+            Each virtual node wakes on a timer, reads real register-level models of a TI sensor over a virtual I²C bus, spends charge from a battery, and
+            publishes to an MQTT-style broker. Break things on purpose: drop packets, drift a sensor, unplug it, brown the supply out, then watch what the
+            dashboard sees.
+          </p>
+          <p class="honest">
+            <b>What this is, and is not.</b> The sensor parts (TMP117, INA219, INA226, ADS1115) are the same datasheet-checked register models as the
+            <a href="lab.html" style="text-decoration: underline">Device Lab</a>. Everything around them is a behavioral model with numbers <em>you</em> choose:
+            current draw, battery curve, radio bursts, link loss and the "world" the sensors measure are assumptions, not measurements of any product. The
+            broker follows MQTT's topic, QoS 0/1, retained-message and last-will rules, but there is no TCP, TLS, QoS 2 or persistent session. No noise or
+            analog error is modeled. Use it to learn how a design behaves, then confirm on real hardware.
+          </p>
+          <p class="sub" id="benchError" style="color: var(--bad)"></p>
+        </div>
+      </header>
+
+      <div class="wrap">
+        <div class="bar" role="toolbar" aria-label="Simulation controls">
+          <button class="btn primary sm" id="run" type="button">Pause</button>
+          <button class="btn ghost sm" id="step" type="button">Step 1 min</button>
+          <label for="speed">speed</label
+          ><select id="speed" aria-label="Simulation speed"></select>
+          <label for="seed">seed</label><input id="seed" type="number" min="0" step="1" style="width: 90px" aria-label="Random seed" />
+          <button class="btn ghost sm" id="reset" type="button">Reset with this seed</button>
+          <span class="sp"></span>
+          <button class="btn ghost sm" id="outage" type="button">Broker outage: off</button>
+          <span class="mono" id="clock" style="font-size: 12px; color: var(--tx2)" aria-live="off"></span>
+        </div>
+        <p class="hint">The same seed replays the same run, loss and all. Add nodes below; click a node to chart it.</p>
+
+        <section class="sec" aria-labelledby="h-nodes" style="margin-top: 26px">
+          <h2 id="h-nodes">Nodes</h2>
+          <div class="row" id="addNode" style="margin-top: 14px"></div>
+          <div class="grid3" id="nodes"></div>
+        </section>
+
+        <div class="grid2">
+          <section class="card" aria-labelledby="h-chart">
+            <h3 id="h-chart">Dashboard <span>what the broker delivered</span></h3>
+            <div class="row" style="margin: 0 0 10px">
+              <select id="field" aria-label="Value to chart"></select>
+              <select id="win" aria-label="Time window"></select>
+            </div>
+            <div id="chart"></div>
+            <div class="legend" id="legend"></div>
+            <p class="hint">
+              Faults show up here as the gap between the dashed line (the true world) and the blue line (what arrived). Lost packets are missing dots.
+            </p>
+          </section>
+
+          <section class="card" aria-labelledby="h-brk">
+            <h3 id="h-brk">Broker <span>MQTT-style</span></h3>
+            <div class="stat" id="bstats"></div>
+            <div class="tw" style="margin-top: 12px; max-height: 250px">
+              <table id="topics" class="logtbl">
+                <thead>
+                  <tr>
+                    <th>topic</th>
+                    <th>messages</th>
+                    <th>last payload</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="row">
+              <input id="pubTopic" type="text" value="farm/cmd/test" style="flex: 2 1 140px" aria-label="Topic to publish" />
+              <input id="pubPayload" type="text" value="hello" style="flex: 2 1 100px" aria-label="Payload" />
+              <select id="pubQos" aria-label="QoS">
+                <option value="0">QoS 0</option>
+                <option value="1">QoS 1</option>
+              </select>
+              <label class="chk" style="margin: 0"><input id="pubRetain" type="checkbox" /><span>retain</span></label>
+              <button class="btn ghost sm" id="pub" type="button">Publish</button>
+              <span class="hint" id="pubMsg" style="margin: 0"></span>
+            </div>
+          </section>
+        </div>
+
+        <section class="card" aria-labelledby="h-log" style="margin-top: 14px">
+          <h3 id="h-log">Message log <span>what the broker saw, newest first</span></h3>
+          <div class="row" style="margin: 0 0 10px">
+            <input id="filter" type="text" placeholder="MQTT topic filter, e.g. farm/+/air or farm/#" style="flex: 3 1 220px" aria-label="Topic filter" />
+            <select id="kind" aria-label="Which events">
+              <option value="important">publishes and problems</option>
+              <option value="all">everything</option>
+              <option value="deliver">deliveries only</option>
+            </select>
+            <span class="hint bad-text" id="filterMsg" style="margin: 0"></span>
+          </div>
+          <div class="tw">
+            <table id="log" class="logtbl">
+              <thead>
+                <tr>
+                  <th>time</th>
+                  <th>event</th>
+                  <th>client</th>
+                  <th>topic</th>
+                  <th>payload</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="hint">
+            "will" is a last-will message: the broker publishes it when a client's keep-alive runs out (1.5 × the interval) without a clean disconnect, or when
+            a rebooting node takes over its old session. "giveup" means a QoS 1 sender used all its retries.
+          </p>
+        </section>
+
+        <section class="sec" aria-labelledby="h-pw">
+          <h2 id="h-pw">Power budget</h2>
+          <p>
+            A duty-cycled node sleeps almost all the time, so the average is a weighted mix of three states. Fill in your own numbers, or take the selected
+            node's. The simulation above spends charge the same way, so the two agree when nothing goes wrong; retries, brown-out reboots and the accelerator
+            make the running node spend more.
+          </p>
+          <div class="grid2">
+            <div class="card">
+              <h3>Inputs <span>your assumptions</span></h3>
+              <div id="calcIn"></div>
+              <div class="row"><button class="btn ghost sm" id="useNode" type="button">Use the selected node's values</button></div>
+              <p class="hint bad-text" id="calcErr"></p>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Result</h3>
+              <div class="stat" id="calcOut"></div>
+              <div class="share" id="share" aria-hidden="true"></div>
+              <div class="sharekey">
+                <span><i style="background: #6f8cff"></i>sleeping</span><span><i style="background: var(--warn)"></i>MCU awake</span
+                ><span><i style="background: var(--bad)"></i>radio</span><span><i style="background: var(--tx3)"></i>self-discharge</span>
+              </div>
+              <p class="note" id="advice"></p>
+              <p class="note" id="measured"></p>
+            </div>
+          </div>
+          <div class="card" style="margin-top: 14px">
+            <h3>Battery life against how often you report <span>other inputs held</span></h3>
+            <div id="sweep"></div>
+          </div>
+        </section>
+
+        <section class="sec" aria-labelledby="h-nm">
+          <h2 id="h-nm">What this bench leaves out</h2>
+          <ul class="nm">
+            <li>
+              Noise, accuracy and temperature drift of the sensors themselves (the only drift is the fault you inject). The part models are exact register
+              arithmetic.
+            </li>
+            <li>Bus timing at the clock-edge level: conversion time is modeled, but not SCL clock edges.</li>
+            <li>The radio: no path loss, collisions, TCP retransmission, TLS handshakes or reconnect storms. "Loss" drops whole messages.</li>
+            <li>MQTT QoS 2, persistent sessions, authentication, message size limits and broker clustering.</li>
+            <li>The battery's real discharge curve, temperature and ageing: voltage is a straight line from full to empty with a fixed series resistance.</li>
+            <li>The MCU itself: its current is a number you type, not the result of running firmware.</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <!-- chrome:footer -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <div class="brandline">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+                <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+                  <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+                </g>
+                <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+              >Aletheon
+            </div>
+            <p>
+              An evidence-grounded firmware assistant, with a free, open set of embedded-systems tools: a board atlas, a parts catalog, datasheet-checked device
+              models and IoT simulators.
+            </p>
+          </div>
+          <div>
+            <h4>Platform</h4>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a>
+          </div>
+          <div>
+            <h4>Learn</h4>
+            <a href="index.html#install">Install the extension</a>
+          </div>
+          <div>
+            <h4>Project</h4>
+            <a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="privacy.html">Privacy and legal</a>
+          </div>
+        </div>
+        <div class="legal">
+          <p>
+            Open source under Apache-2.0. Aletheon is independent and is not affiliated with, sponsored by or endorsed by any chip vendor named on this site.
+            Part names and numbers belong to their owners. Simulators here are behavioral models, not circuit simulations, and never a substitute for the
+            current official datasheet or for testing on real hardware.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:footer -->
+
+    <script src="assets/devices-data.js"></script>
+    <script src="assets/devicecore.js"></script>
+    <script src="assets/simcore.js"></script>
+    <script src="assets/iotnodes.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/bench.js"></script>
+  </body>
+</html>

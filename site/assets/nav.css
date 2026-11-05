@@ -1,0 +1,155 @@
+/* Shared navigation and footer for every page. Loaded AFTER each page's own <style> so it wins; on phones the link row scrolls sideways
+ * instead of disappearing, so every page stays reachable. */
+nav.pill {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100vw - 24px);
+  padding: 7px 8px 7px 16px;
+  border: 1px solid var(--ln2, rgba(255, 255, 255, 0.14));
+  border-radius: 999px;
+  background: rgba(14, 16, 20, 0.78);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+nav.pill .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin-right: 10px;
+  flex: none;
+}
+nav.pill .brand svg {
+  width: 26px;
+  height: 26px;
+}
+nav.pill .links {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+nav.pill .links::-webkit-scrollbar {
+  display: none;
+}
+nav.pill .links a,
+nav.pill .links a:not(.k) {
+  display: inline-block;
+  flex: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--tx2, #a4a9b3);
+  font-size: 14px;
+  transition: 0.25s;
+}
+nav.pill .links a:hover,
+nav.pill .links a.on {
+  color: var(--tx, #f4f5f7);
+  background: rgba(255, 255, 255, 0.07);
+}
+nav.pill .btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  background: #f4f5f7;
+  color: #0a0b0d;
+  text-decoration: none;
+}
+@media (max-width: 900px) {
+  nav.pill {
+    left: 12px;
+    right: 12px;
+    transform: none;
+    max-width: none;
+    padding-left: 12px;
+  }
+  nav.pill .links {
+    flex: 1;
+  }
+}
+@media (max-width: 640px) {
+  nav.pill .brand {
+    font-size: 0;
+    gap: 0;
+    margin-right: 4px;
+  }
+  nav.pill .btn {
+    display: none;
+  }
+  nav.pill .links a,
+  nav.pill .links a:not(.k) {
+    padding: 8px 10px;
+    font-size: 13.5px;
+  }
+}
+
+footer.site {
+  margin-top: 90px;
+  border-top: 1px solid var(--ln, rgba(255, 255, 255, 0.075));
+  padding: 44px 0 70px;
+  color: var(--tx3, #6c727d);
+  font-size: 13px;
+}
+footer.site .cols {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 28px;
+}
+footer.site h4 {
+  font: 600 10.5px var(--mono, monospace);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  color: var(--tx2, #a4a9b3);
+}
+footer.site a {
+  display: block;
+  padding: 3px 0;
+  color: var(--tx2, #a4a9b3);
+}
+footer.site a:hover {
+  color: var(--tx, #f4f5f7);
+}
+footer.site .brandline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tx, #f4f5f7);
+  font-weight: 600;
+  font-size: 15px;
+}
+footer.site .brandline svg {
+  width: 26px;
+  height: 26px;
+}
+footer.site p {
+  margin-top: 10px;
+  max-width: 420px;
+}
+footer.site .legal {
+  margin-top: 34px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ln, rgba(255, 255, 255, 0.075));
+  max-width: 900px;
+}
+@media (max-width: 760px) {
+  footer.site .cols {
+    grid-template-columns: 1fr 1fr;
+  }
+  footer.site .cols > div:first-child {
+    grid-column: 1 / -1;
+  }
+}

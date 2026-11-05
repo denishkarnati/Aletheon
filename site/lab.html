@@ -660,6 +660,7 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="assets/nav.css" />
   </head>
   <body>
     <a class="skip" href="#code">Skip to the code editor</a>
@@ -674,11 +675,8 @@
           <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
         >Aletheon</a
       >
-      <div class="links">
-        <a href="index.html#how">How it works</a><a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html" class="on k">Lab</a
-        ><a href="index.html#examples">Examples</a><a href="index.html#install">Install</a>
-      </div>
-      <a class="btn primary sm" href="https://github.com/denishkarnati/aletheon">GitHub</a>
+      <div class="links"><a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html" class="on">Lab</a><a href="bench.html">Bench</a></div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
     </nav>
 
     <main>
@@ -813,6 +811,50 @@ sim.get('name')</pre>
         </footer>
       </div>
     </main>
+    <!-- chrome:footer -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <div class="brandline">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+                <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+                  <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+                </g>
+                <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+              >Aletheon
+            </div>
+            <p>
+              An evidence-grounded firmware assistant, with a free, open set of embedded-systems tools: a board atlas, a parts catalog, datasheet-checked device
+              models and IoT simulators.
+            </p>
+          </div>
+          <div>
+            <h4>Platform</h4>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a>
+          </div>
+          <div>
+            <h4>Learn</h4>
+            <a href="index.html#install">Install the extension</a>
+          </div>
+          <div>
+            <h4>Project</h4>
+            <a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="privacy.html">Privacy and legal</a>
+          </div>
+        </div>
+        <div class="legal">
+          <p>
+            Open source under Apache-2.0. Aletheon is independent and is not affiliated with, sponsored by or endorsed by any chip vendor named on this site.
+            Part names and numbers belong to their owners. Simulators here are behavioral models, not circuit simulations, and never a substitute for the
+            current official datasheet or for testing on real hardware.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:footer -->
     <script src="assets/devices-data.js"></script>
     <script src="assets/devicecore.js"></script>
     <script src="assets/devicelab.js"></script>
