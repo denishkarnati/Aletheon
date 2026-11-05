@@ -19,6 +19,9 @@ const pages = fs
 const html = Object.fromEntries(pages.map((f) => [f, fs.readFileSync(path.join(SITE, f), 'utf8')]));
 const ids = (h) => new Set([...h.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
 const idsOf = Object.fromEntries(pages.map((f) => [f, ids(html[f])]));
+// lab.html builds its device tabs at run time, so #tmp117 is a route rather than an id in the markup: take the routes from the data.
+const deviceIds = [...fs.readFileSync(path.join(SITE, 'assets', 'devices-data.js'), 'utf8').matchAll(/"id":"([a-z0-9]+)","part"/g)].map((m) => m[1]);
+for (const id of deviceIds) idsOf['lab.html'].add(id);
 
 let menu = null;
 for (const f of pages) {
@@ -34,7 +37,8 @@ for (const f of pages) {
       bad.push(`${v} (missing file)`);
       continue;
     }
-    if (frag && !frag.includes('=') && target.endsWith('.html') && !idsOf[target]?.has(frag)) bad.push(`${v} (no id "${frag}")`);
+    const anchor = frag.split('&')[0];
+    if (anchor && !anchor.includes('=') && target.endsWith('.html') && !idsOf[target]?.has(anchor)) bad.push(`${v} (no id "${anchor}")`);
   }
   check(`${f}: every local link, script and image resolves`, bad.length === 0, bad.join('; '));
   check(

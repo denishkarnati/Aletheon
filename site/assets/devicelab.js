@@ -147,6 +147,18 @@
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); }
     else if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); var t = e.target, s = t.selectionStart; t.value = t.value.slice(0, s) + '  ' + t.value.slice(t.selectionEnd); t.selectionStart = t.selectionEnd = s + 2; }
   });
-  select((location.hash || '').slice(1) || 'tmp117');
-  window.addEventListener('hashchange', function () { var id = (location.hash || '').slice(1); if (id && (!cur || id !== cur.id)) select(id); });
+  // #tmp117  or  #tmp117&code=<url-encoded program>  (a lab can hand you a program; it is only put in the editor, never run until you press Run)
+  function hashParts() {
+    var p = {};
+    (location.hash || '').slice(1).split('&').forEach(function (kv, i) {
+      var j = kv.indexOf('=');
+      if (i === 0 && j < 0) { p.id = kv; return; }
+      if (j > 0) { try { p[kv.slice(0, j)] = decodeURIComponent(kv.slice(j + 1)); } catch (e) { /* ignore a malformed value */ } }
+    });
+    return p;
+  }
+  var first = hashParts();
+  select(first.id || 'tmp117');
+  if (first.code) $('code').value = first.code.slice(0, 4000);
+  window.addEventListener('hashchange', function () { var id = hashParts().id; if (id && (!cur || id !== cur.id)) select(id); });
 })();

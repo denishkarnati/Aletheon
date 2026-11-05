@@ -173,7 +173,7 @@
 
   // ---- wiring -------------------------------------------------------------------------------------------------------------------------------
   function tab(name) {
-    ['i2c', 'spi', 'uart', 'pwm'].forEach((t) => { $('sec-' + t).style.display = t === name ? '' : 'none'; $('tab-' + t).classList.toggle('on', t === name); });
+    ['i2c', 'spi', 'uart', 'pwm'].forEach((t) => { $(t).style.display = t === name ? '' : 'none'; $('tab-' + t).classList.toggle('on', t === name); });
     try { history.replaceState(null, '', '#' + name); } catch (e) { /* ignore */ }
     ({ i2c: runI2c, spi: runSpi, uart: runUart, pwm: () => { runPwm(); runBounce(); } })[name]();
   }

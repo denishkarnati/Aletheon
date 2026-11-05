@@ -24,7 +24,8 @@
     dash.subscribe('#', 1, onMessage);
     you = fleet.broker.connect('you', { keepAliveS: 0, link: { latencyMs: 0 } });
     $('outage').classList.remove('on'); $('outage').textContent = 'Broker outage: off';
-    addNode('greenhouse');
+    const over = overridesFromHash();
+    addNode(over.kind || 'greenhouse', over);
   }
 
   function onMessage(m) {
@@ -40,8 +41,30 @@
     }
   }
 
-  function addNode(kind) {
+  // A lab can open the Bench with settings: bench.html#preset=greenhouse&period=300&radio=ble&battery=aa2&sleep=8
+  function hashParams() {
+    const o = {};
+    (window.location.hash || '').replace(/^#/, '').split('&').forEach((kv) => { const i = kv.indexOf('='); if (i > 0) { try { o[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); } catch (e) { /* ignore a malformed value */ } } });
+    return o;
+  }
+  function overridesFromHash() {
+    const h = hashParams(), o = {};
+    if (PRESET_LABEL[h.preset]) o.kind = h.preset;
+    const period = Number(h.period), sleep = Number(h.sleep);
+    if (isFinite(period) && period >= 1 && period <= 86400) o.periodS = period;
+    if (isFinite(sleep) && sleep >= 0 && sleep <= 5000 && h.sleep !== undefined) o.sleepUa = sleep;
+    if (IOT.RADIOS[h.radio]) o.radio = h.radio;
+    if (IOT.BATTERIES[h.battery]) o.battery = h.battery;
+    return o;
+  }
+  function addNode(kind, over) {
+    over = over || {};
     const base = JSON.parse(JSON.stringify(IOT.PRESETS[kind]));
+    if (over.periodS) base.periodS = over.periodS;
+    base.radioId = over.radio || 'wifi';
+    base.energy = { ...base.energy, ...IOT.RADIOS[base.radioId], ...(over.sleepUa !== undefined ? { sleepUa: over.sleepUa } : {}) };
+    delete base.energy.label;
+    if (over.battery) base.battery = { ...IOT.BATTERIES[over.battery] };
     counter[kind] = (counter[kind] || 0) + 1;
     base.id = kind + (counter[kind] > 1 ? counter[kind] : '');
     const node = fleet.addNode(base);
@@ -86,7 +109,7 @@
     const body = el('div');
     body.appendChild(UI.numberField('Period (s)', node.cfg.periodS, (v) => { if (v >= 1) node.cfg.periodS = v; }, { min: 1 }));
     body.appendChild(UI.selectField('MQTT QoS', [{ value: 0, label: '0 (at most once)' }, { value: 1, label: '1 (at least once)' }], node.cfg.qos, (v) => { node.cfg.qos = Number(v); }));
-    body.appendChild(UI.selectField('Radio class', Object.keys(IOT.RADIOS).map((k) => ({ value: k, label: IOT.RADIOS[k].label })), 'wifi', (v) => { Object.assign(p.en, { txMa: IOT.RADIOS[v].txMa, txMs: IOT.RADIOS[v].txMs }); }));
+    body.appendChild(UI.selectField('Radio class', Object.keys(IOT.RADIOS).map((k) => ({ value: k, label: IOT.RADIOS[k].label })), node.cfg.radioId || 'wifi', (v) => { Object.assign(p.en, { txMa: IOT.RADIOS[v].txMa, txMs: IOT.RADIOS[v].txMs }); }));
     body.appendChild(UI.selectField('Battery', Object.keys(IOT.BATTERIES).map((k) => ({ value: k, label: IOT.BATTERIES[k].label })), Object.keys(IOT.BATTERIES).find((k) => IOT.BATTERIES[k].capacityMah === p.bat.capacityMah) || 'li18650', (v) => { Object.assign(p.bat, IOT.BATTERIES[v]); st.usedNc = 0; }));
     body.appendChild(UI.numberField('Sleep current (µA)', p.en.sleepUa, (v) => { p.en.sleepUa = v; }, { min: 0 }));
     body.appendChild(UI.numberField('Awake current (mA)', p.en.activeMa, (v) => { p.en.activeMa = v; }, { min: 0 }));

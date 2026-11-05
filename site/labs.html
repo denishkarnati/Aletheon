@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scenario Labs · Aletheon</title>
+    <meta
+      name="description"
+      content="Guided embedded-systems labs that tie the platform together: budget a battery weather node, debug an I2C NACK, find why a sensor reads minus 256 degrees, survive a coin-cell brown-out and fix a UART baud rate."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Scenario Labs · Aletheon" />
+    <meta
+      property="og:description"
+      content="Five hands-on embedded labs that run on datasheet-checked models: power, I2C, firmware bugs, brown-outs and UART."
+    />
+    <meta property="og:image" content="assets/og.png" />
+    <link rel="stylesheet" href="assets/platform.css" />
+    <link rel="stylesheet" href="assets/nav.css" />
+  </head>
+  <body>
+    <a class="skip" href="#labs">Skip to the labs</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links">
+        <a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html">Bench</a><a href="analyzer.html">Analyzer</a
+        ><a href="labs.html" class="on">Labs</a>
+      </div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">Scenario Labs</div>
+          <h1>Fix it like <em>on a real bench.</em></h1>
+          <p class="sub">
+            Five short, hands-on problems that firmware engineers actually meet. Each one runs on the same models as the rest of the platform, can be solved,
+            and fails the obvious wrong way for a reason you can see. They link out to real boards in the Atlas, real parts in the catalog, the
+            datasheet-checked models in the Device Lab, the IoT Bench and the Logic Analyzer.
+          </p>
+          <p class="honest">
+            <b>What this is, and is not.</b> Each lab teaches a general lesson using behavioral models. The numbers (sleep current, radio bursts, battery curve)
+            are illustrative assumptions you can change, not measurements of any product. A lab passing here means you understood the idea, not that a design is
+            ready for hardware.
+          </p>
+          <p class="sub" id="labError" style="color: var(--bad)"></p>
+        </div>
+      </header>
+
+      <div class="wrap" id="labs">
+        <div class="cards" id="labCards"></div>
+
+        <section class="sec lab" id="weather" aria-labelledby="h-weather">
+          <h2 id="h-weather">1 · Build a battery weather node <span class="chip" id="done-weather"></span></h2>
+          <p>
+            <b>Goal:</b> a node with a TMP117 air-temperature sensor and an ADS1115 reading a soil probe must report at least once a minute and run for at least
+            two years on its battery. Pick a board, a radio and a battery, and watch where the charge goes.
+          </p>
+          <div class="grid2">
+            <div class="card">
+              <h3>1 · Pick a board <span>real boards from the Chip Atlas</span></h3>
+              <div id="boards"></div>
+              <p class="hint">
+                The board only sets the starting radio here: its real specs come from the Atlas, but its sleep current is not in that data. Look it up in the
+                chip's datasheet (the Atlas links the vendor page) and type it below. Dev boards often draw far more than the bare chip.
+              </p>
+              <h3 style="margin-top: 18px">2 · Sensors <span>modeled from the datasheets</span></h3>
+              <p class="note" style="margin-top: 0">
+                <a href="lab.html#tmp117" style="text-decoration: underline">TMP117 model</a> ·
+                <a href="lab.html#ads1115" style="text-decoration: underline">ADS1115 model</a> · find them in the
+                <a href="parts.html#q=TMP117" style="text-decoration: underline">Parts catalog</a>
+              </p>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>3 · Choose your design</h3>
+              <div id="wxIn"></div>
+              <div id="wxOut" style="margin-top: 14px"></div>
+              <div class="row"><a class="btn ghost sm" id="wxBench" href="bench.html">Run this node in the IoT Bench</a></div>
+            </div>
+          </div>
+          <details class="api">
+            <summary>Hints</summary>
+            <p>
+              Look at the colored bar: if the radio takes most of the charge, fewer or shorter bursts help more than a lower sleep current. A radio that suits
+              short bursts of a few bytes is a very different thing from one built for long range. Then check the sleep number: is it the chip's, or the whole
+              board's?
+            </p>
+          </details>
+        </section>
+
+        <section class="sec lab" id="nack" aria-labelledby="h-nack">
+          <h2 id="h-nack">2 · Debug a NACK <span class="chip" id="done-nack"></span></h2>
+          <p>
+            <b>Goal:</b> this code reads a TMP117's Device_ID and gets nothing back. On your board the sensor's ADD0 pin is wired to <b>GND</b>. Find the right
+            address from the datasheet table, try it, and read the failure on the waveform.
+          </p>
+          <div class="grid2">
+            <div class="card">
+              <h3>The code <span>not run, only shown</span></h3>
+              <pre class="out" style="max-height: none">
+const ADDR = 0x49;
+log('Device ID =', hex(i2c.readReg16(ADDR, 0x0F)));</pre>
+              <h3 style="margin-top: 18px">Address table <span id="nackCite"></span></h3>
+              <div class="tw">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ADD0 is tied to</th>
+                      <th>7-bit address</th>
+                    </tr>
+                  </thead>
+                  <tbody id="nackTable"></tbody>
+                </table>
+              </div>
+              <div class="row">
+                <label for="nackAddr" class="mono" style="font-size: 12px; color: var(--tx3)">try address</label>
+                <select id="nackAddr" aria-label="Address to try"></select>
+                <button class="btn primary sm" id="nackGo" type="button">Try it</button>
+              </div>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Result</h3>
+              <p class="note" id="nackOut" style="margin-top: 0">Pick an address and press Try it.</p>
+              <div class="row"><a class="btn ghost sm" id="nackLab" href="lab.html#tmp117">Open the fixed code in the Device Lab</a></div>
+            </div>
+          </div>
+          <div class="card sw">
+            <h3>What the wires did</h3>
+            <div id="nackWave"></div>
+          </div>
+          <details class="api">
+            <summary>Hints</summary>
+            <p>
+              A NACK on the first byte means no device owns that address. The ninth clock after the address byte is where a listening device pulls SDA low. If
+              SDA stays high there, nobody answered. Which strap does "tied to GND" correspond to in the table?
+            </p>
+          </details>
+        </section>
+
+        <section class="sec lab" id="minus256" aria-labelledby="h-m256">
+          <h2 id="h-m256">3 · Why does the sensor read −256 °C? <span class="chip" id="done-minus256"></span></h2>
+          <p>
+            <b>Goal:</b> a supply glitch resets the TMP117 just before the node reads it. The firmware must publish the true 25 °C for that very cycle, with no
+            bad value and no lost reading. Choose what the firmware does, then run the glitch.
+          </p>
+          <div class="grid2">
+            <div class="card">
+              <h3>Firmware choices</h3>
+              <label class="chk"><input type="checkbox" id="gWait" /><span>Poll Data_Ready (Configuration bit 13) before reading the result</span></label>
+              <label class="chk"><input type="checkbox" id="gVal" /><span>Throw away a 0x8000 result instead of publishing it</span></label>
+              <div class="row"><button class="btn primary sm" id="gGo" type="button">Glitch the sensor and run 3 minutes</button></div>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>What the dashboard received after the glitch</h3>
+              <p class="note" id="gOut" style="margin-top: 0">Press the button.</p>
+              <div class="tw">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>time (s)</th>
+                      <th>temperature (°C)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="gRows"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <details class="api">
+            <summary>Hints</summary>
+            <p>
+              The model's own facts say it: until the first conversion finishes after a reset, the result register reads 0x8000, which is −256 °C. Ignoring that
+              value hides the symptom but loses the reading; the cure is to wait for the part to say it has a result. See the TMP117 card in the
+              <a href="lab.html#tmp117" style="text-decoration: underline">Device Lab</a> for the page-cited facts.
+            </p>
+          </details>
+        </section>
+
+        <section class="sec lab" id="coincell" aria-labelledby="h-coin">
+          <h2 id="h-coin">4 · A coin cell that cannot power a radio <span class="chip" id="done-coincell"></span></h2>
+          <p>
+            <b>Goal:</b> a sensor node on a CR2032-class coin cell must publish a reading every minute for two hours without ever resetting. Coin cells have a
+            high internal resistance, so a big radio burst pulls the supply down. Choose the radio.
+          </p>
+          <div class="grid2">
+            <div class="card">
+              <h3>Choose the radio</h3>
+              <div id="coinIn"></div>
+              <div class="row"><button class="btn primary sm" id="coinGo" type="button">Run 2 simulated hours</button></div>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Result</h3>
+              <p class="note" id="coinOut" style="margin-top: 0">Press the button.</p>
+            </div>
+          </div>
+          <details class="api">
+            <summary>Hints</summary>
+            <p>
+              Voltage at the MCU = cell voltage − burst current × internal resistance. Work it out for each radio, then compare with the lowest voltage the MCU
+              tolerates (the Bench has these numbers). A bigger battery is not the fix here; a gentler burst is.
+            </p>
+          </details>
+        </section>
+
+        <section class="sec lab" id="baud" aria-labelledby="h-baud">
+          <h2 id="h-baud">5 · Fix the UART garbage <span class="chip" id="done-baud"></span></h2>
+          <p>
+            <b>Goal:</b> a sensor prints <span class="mono">Temp=21.5C</span> once a second at a baud rate you were not told. Your terminal shows nonsense.
+            Change the receiver baud rate until the text reads cleanly. The sender runs 8N1.
+          </p>
+          <div class="grid2">
+            <div class="card">
+              <h3>Receiver</h3>
+              <div class="row">
+                <select id="baudRx" aria-label="Receiver baud rate"></select
+                ><button class="btn primary sm" id="baudGo" type="button">Read the line</button>
+              </div>
+            </div>
+            <div class="card" aria-live="polite">
+              <h3>Terminal</h3>
+              <p class="note" id="baudOut" style="margin-top: 0">Pick a rate and press the button.</p>
+            </div>
+          </div>
+          <div class="card sw">
+            <h3>The line, seen on a logic analyzer</h3>
+            <div id="baudWave"></div>
+          </div>
+          <details class="api">
+            <summary>Hints</summary>
+            <p>
+              Measure the width of the shortest pulse on the waveform with the cursors (it is one bit time) and take 1 ÷ that. Open the same signal in the
+              <a href="analyzer.html#uart" style="text-decoration: underline">Logic Analyzer</a> to see how a wrong rate breaks the frames.
+            </p>
+          </details>
+        </section>
+
+        <section class="sec" aria-labelledby="h-nm">
+          <h2 id="h-nm">What these labs leave out</h2>
+          <ul class="nm">
+            <li>Real hardware: noise, tolerances, temperature, layout and the many ways a prototype fails that a model cannot show.</li>
+            <li>
+              Any specific product's current draw. Every power figure is an assumption you can change; look up the real numbers in the datasheet of the part you
+              use.
+            </li>
+            <li>The MCU running firmware. A lab can show that a design is plausible; it cannot replace flashing a board and measuring it.</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <!-- chrome:footer -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <div class="brandline">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+                <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+                  <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+                </g>
+                <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+              >Aletheon
+            </div>
+            <p>
+              An evidence-grounded firmware assistant, with a free, open set of embedded-systems tools: a board atlas, a parts catalog, datasheet-checked device
+              models and IoT simulators.
+            </p>
+          </div>
+          <div>
+            <h4>Platform</h4>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a
+            ><a href="analyzer.html">Logic Analyzer</a><a href="labs.html">Scenario Labs</a>
+          </div>
+          <div>
+            <h4>Learn</h4>
+            <a href="index.html#install">Install the extension</a>
+          </div>
+          <div>
+            <h4>Project</h4>
+            <a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="privacy.html">Privacy and legal</a>
+          </div>
+        </div>
+        <div class="legal">
+          <p>
+            Open source under Apache-2.0. Aletheon is independent and is not affiliated with, sponsored by or endorsed by any chip vendor named on this site.
+            Part names and numbers belong to their owners. Simulators here are behavioral models, not circuit simulations, and never a substitute for the
+            current official datasheet or for testing on real hardware.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:footer -->
+
+    <script src="assets/devices-data.js"></script>
+    <script src="assets/atlas-data.js"></script>
+    <script src="assets/devicecore.js"></script>
+    <script src="assets/simcore.js"></script>
+    <script src="assets/iotnodes.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/logiccore.js"></script>
+    <script src="assets/waveview.js"></script>
+    <script src="assets/labcore.js"></script>
+    <script src="assets/labs.js"></script>
+  </body>
+</html>

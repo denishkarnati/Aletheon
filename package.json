@@ -183,7 +183,7 @@
     "test:driver": "esbuild test/driver-safety.test.ts --bundle --platform=node --outfile=dist/driver-safety.test.js --log-level=warning && node dist/driver-safety.test.js",
     "test:hardening": "npm run build && esbuild test/hardening.test.ts --bundle --platform=node --outfile=dist/hardening.test.js --log-level=warning && node dist/hardening.test.js",
     "scan:secrets": "node scripts/scan-secrets.mjs",
-    "test:site": "node site/tools/test-atlas-data.mjs && node site/tools/test-parts-data.mjs && node site/tools/test-devices.mjs && node site/tools/test-simcore.mjs && node site/tools/test-iot.mjs && node site/tools/test-logic.mjs && node site/tools/test-audit-port.mjs && node site/tools/test-links.mjs && node site/tools/test-csp.mjs",
+    "test:site": "node site/tools/test-atlas-data.mjs && node site/tools/test-parts-data.mjs && node site/tools/test-devices.mjs && node site/tools/test-simcore.mjs && node site/tools/test-iot.mjs && node site/tools/test-logic.mjs && node site/tools/test-labs.mjs && node site/tools/test-audit-port.mjs && node site/tools/test-links.mjs && node site/tools/test-csp.mjs",
     "site:chrome": "node site/tools/stamp-chrome.mjs",
     "site:csp": "node site/tools/make-csp.mjs",
     "test:csp": "node site/tools/test-csp.mjs",
