@@ -11,7 +11,7 @@
       const tr = el('tr');
       tr.appendChild(el('td', 'm', d.part));
       tr.appendChild(el('td', '', d.kind + ' · ' + d.vendor));
-      const td = el('td'); const a = el('a', '', d.source.doc + ', ' + d.source.rev); a.href = d.source.url; a.rel = 'noopener noreferrer'; a.style.textDecoration = 'underline'; td.appendChild(a); tr.appendChild(td);
+      const td = el('td'); const a = el('a', '', d.source.doc + ', ' + d.source.rev); if (/^https:\/\//.test(d.source.url)) a.href = d.source.url; a.rel = 'noopener noreferrer'; a.style.textDecoration = 'underline'; td.appendChild(a); tr.appendChild(td);
       tr.appendChild(el('td', 'm', String(d.registers.length)));
       tr.appendChild(el('td', 'm', String(d.facts.length)));
       body.appendChild(tr);

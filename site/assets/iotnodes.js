@@ -171,11 +171,12 @@
     }
     function brownout(why, downMs) {
       if (state.status === 'dead') return;
+      settleSleep(); clock.cancel(state.rebootTimer);
       state.brownouts++; gen++; clock.cancel(timer);
       if (mqtt) mqtt.kill();
       state.status = 'down'; state.reason = 'brown-out: ' + why;
       bus.powerCycle();
-      clock.after(downMs === undefined ? 5000 : downMs, () => { if (state.status === 'down') boot(); });
+      state.rebootTimer = clock.after(downMs === undefined ? 5000 : downMs, () => { if (state.status === 'down') boot(); });
     }
 
     function applyWorld(t) {
@@ -254,6 +255,7 @@
         keepAliveS: cfg.keepAliveS === undefined ? 120 : cfg.keepAliveS, link: { ...(cfg.link || {}) }, retryMs: cfg.retryMs, maxRetries: cfg.maxRetries,
         will: { topic: topic('status'), payload: 'offline', qos: 1, retain: true },
         onTx: () => { busy(en.txMa * 1000, en.txMs); },
+        onReconnect: () => { publish('status', 'online', { qos: 1, retain: true }); }, // timed out by the broker but still alive: announce again
       });
       bus.powerCycle(); bus.t = clock.now;
       const { errors, busMs } = initSensors();
@@ -285,7 +287,7 @@
         else if (f.kind === 'replug') bus.setConnected(f.addr, true);
         else if (f.kind === 'sensorReset') state.pendingReset.add(f.addr); // takes effect right before the next read
         else if (f.kind === 'brownout') brownout('injected supply dip', f.ms);
-        else if (f.kind === 'link') mqtt && mqtt.setLink(f.patch);
+        else if (f.kind === 'link') { Object.assign(cfg.link, f.patch); if (mqtt) mqtt.setLink(f.patch); } // kept in cfg so a reboot keeps it
         else throw new Error(`unknown fault "${f.kind}"`);
       },
       get mqtt() { return mqtt; },

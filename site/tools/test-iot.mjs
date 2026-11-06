@@ -329,6 +329,68 @@ const sensorNode = (over = {}) => ({
   );
 }
 
+// ---- regression: found by the independent review ----------------------------------------------------------------------------------------
+{
+  const f = I.createFleet({ core, seed: 1 }),
+    got = dash(f);
+  const n = f.addNode(sensorNode({ keepAliveS: 60 }));
+  f.startAll();
+  f.run(2 * 60000);
+  n.inject({ kind: 'link', patch: { loss: 1 } });
+  f.run(8 * 60000);
+  n.inject({ kind: 'link', patch: { loss: 0 } });
+  f.run(14 * 60000);
+  const st = got.filter((m) => m.topic === 's/n/status').map((m) => m.payload);
+  check(
+    'node: after a long radio outage the broker marks it offline, and when the link returns the node announces online again',
+    st.join() === 'online,offline,online' && f.broker.retained.get('s/n/status').payload === 'online',
+    st.join(),
+  );
+}
+{
+  const f = I.createFleet({ core, seed: 1 });
+  const n = f.addNode(sensorNode());
+  f.startAll();
+  f.run(70000);
+  n.inject({ kind: 'brownout', ms: 3000 });
+  f.run(71000);
+  n.inject({ kind: 'brownout', ms: 20000 }); // a second dip while the first is still being recovered from
+  f.run(75000);
+  const early = n.state.status;
+  f.run(93000);
+  check(
+    'fault brown-out: a second dip restarts the recovery timer (still down at the first deadline, running after the second)',
+    early === 'down' && n.state.status === 'running' && n.state.boots === 2,
+    `${early} ${n.state.status} ${n.state.boots}`,
+  );
+}
+{
+  const f = I.createFleet({ core, seed: 1 });
+  const n = f.addNode(sensorNode());
+  f.startAll();
+  f.run(70000);
+  n.inject({ kind: 'link', patch: { loss: 0.5 } });
+  n.inject({ kind: 'brownout', ms: 1000 });
+  f.run(80000);
+  check('fault link loss: the degraded link is kept across a reboot', n.mqtt.link.loss === 0.5, String(n.mqtt.link.loss));
+}
+{
+  const run = (keepAliveS) => {
+    const f = I.createFleet({ core, seed: 1 });
+    const n = f.addNode(sensorNode({ periodS: 3600, keepAliveS }));
+    f.startAll();
+    f.run(3 * 3600000);
+    return n.totalNc;
+  };
+  const withPings = run(120),
+    without = run(0);
+  check(
+    'energy: keep-alive pings power the radio too (a long sleep period with a short keep-alive costs more charge)',
+    withPings - without > 1e8,
+    `${withPings} vs ${without}`,
+  );
+}
+
 // ---- network ---------------------------------------------------------------------------------------------------------------------------
 {
   const run = (qos, loss, seed) => {

@@ -49,12 +49,13 @@
   }
   function overridesFromHash() {
     const h = hashParams(), o = {};
-    if (PRESET_LABEL[h.preset]) o.kind = h.preset;
+    const own = (obj, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(obj, k);
+    if (own(PRESET_LABEL, h.preset)) o.kind = h.preset;
     const period = Number(h.period), sleep = Number(h.sleep);
     if (isFinite(period) && period >= 1 && period <= 86400) o.periodS = period;
     if (isFinite(sleep) && sleep >= 0 && sleep <= 5000 && h.sleep !== undefined) o.sleepUa = sleep;
-    if (IOT.RADIOS[h.radio]) o.radio = h.radio;
-    if (IOT.BATTERIES[h.battery]) o.battery = h.battery;
+    if (own(IOT.RADIOS, h.radio)) o.radio = h.radio;
+    if (own(IOT.BATTERIES, h.battery)) o.battery = h.battery;
     return o;
   }
   function addNode(kind, over) {
@@ -97,7 +98,8 @@
       one('Glitch ' + name, () => node.inject({ kind: 'sensorReset', addr: s.addr }));
     });
     one('Brown-out 10 s', () => node.inject({ kind: 'brownout', ms: 10000 }));
-    toggle('Link 50 % loss', () => node.inject({ kind: 'link', patch: { loss: 0.5 } }), () => node.inject({ kind: 'link', patch: { loss: node.cfg.link.loss || 0 } }));
+    let prevLoss = 0;
+    toggle('Link 50 % loss', () => { prevLoss = node.cfg.link.loss || 0; node.inject({ kind: 'link', patch: { loss: 0.5 } }); }, () => node.inject({ kind: 'link', patch: { loss: prevLoss } }));
     if (HAS_ANALYZER) one('I²C capture → Analyzer', () => {
       try { sessionStorage.setItem('aletheon.capture', JSON.stringify({ source: 'IoT Bench node "' + node.id + '"', t: fleet.clock.now, events: node.bus.events.slice(-240) })); } catch (e) { /* storage blocked */ }
       window.location.href = 'analyzer.html#capture';

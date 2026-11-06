@@ -38,6 +38,7 @@
       const b = IOT.createBus(core); b.attach('ads1115', 0x48, { ain0: 1.65, ain1: 0, ain2: 0, ain3: 0 }); IOT.DRIVERS.ads1115.read(b, 0x48, { channels: [0], pga: 1 }, {}); return b.events;
     }],
   };
+  const MAX_CAPTURE_BYTES = 20000, MAX_UI_TX = 2000; // keeps a crafted capture or CSV from freezing the page
   let i2cSource = 'tmp-read', csvChans = null, capture = null;
 
   function loadCapture() {
@@ -46,6 +47,8 @@
       if (!raw) return null;
       const c = JSON.parse(raw);
       if (!c || !Array.isArray(c.events) || c.events.length > 5000) return null;
+      let budget = MAX_CAPTURE_BYTES; // total data bytes across the capture
+      c.events = c.events.filter((e) => { if (!e || !Array.isArray(e.bytes)) return false; budget -= e.bytes.length; return budget >= 0; });
       const ev = c.events.filter((e) => e && (e.dir === 'W' || e.dir === 'R' || e.dir === 'I' || e.dir === 'S') && Array.isArray(e.bytes) && e.bytes.every((b) => Number.isInteger(b) && b >= 0 && b < 256) && Number.isInteger(e.addr) && e.addr >= 0 && e.addr < 128).map((e) => ({ dir: e.dir, addr: e.addr, bytes: e.bytes, ack: !!e.ack, note: typeof e.note === 'string' ? e.note.slice(0, 300) : '', warn: Array.isArray(e.warn) ? e.warn.filter((x) => typeof x === 'string').map((x) => x.slice(0, 200)) : [], t: typeof e.t === 'number' ? e.t : 0 }));
       return { source: typeof c.source === 'string' ? c.source.slice(0, 80) : 'another page', events: ev };
     } catch (e) { return null; }
@@ -78,15 +81,16 @@
       const enc = L.i2cEncode(events, { sclHz: Number($('sclHz').value), repeatedStart: $('rstart').checked });
       chans = { scl: enc.scl, sda: enc.sda, endUs: enc.endUs };
     }
-    const dec = L.i2cDecode(chans.scl, chans.sda), annos = annotateI2c(dec);
+    const dec = L.i2cDecode(chans.scl, chans.sda);
+    const decShown = { ...dec, transactions: dec.transactions.slice(0, MAX_UI_TX) }, annos = annotateI2c(decShown);
     wave.i2c.set({ channels: [{ name: 'SCL', ch: chans.scl }, { name: 'SDA', ch: chans.sda }], lanes: ['bytes', 'frames'], annos, endUs: chans.endUs || L.endOf(chans.scl, chans.sda) + 20 });
     const bus = events ? events.filter((e) => e.dir === 'W' || e.dir === 'R') : null;
-    const list = dec.transactions.map((x, i) => {
+    const list = decShown.transactions.map((x, i) => {
       const ev = bus && bus[i];
       return [{ text: String(i + 1), cls: 'm' }, { text: UI.fmtNum(x.t0, 1), cls: 'm' }, { text: x.dir, cls: 'm' }, { text: x.addrDone ? hex2(x.addr) : '?', cls: 'm' }, { text: hexList(x.bytes.map((b) => b.v)) || '—', cls: 'm' }, { text: x.addrDone ? (x.addrAck ? 'ACK' : 'NACK: nobody answered') : 'incomplete', cls: x.addrAck ? '' : 'nack' }, { text: ev && ev.note ? ev.note : '' }];
     });
     rows('i2cTbl', list);
-    const parts = [dec.transactions.length + ' transactions decoded', 'clock measured ' + fmtNum(dec.sclHz / 1000, 1) + ' kHz', note];
+    const parts = [dec.transactions.length + ' transactions decoded' + (dec.transactions.length > MAX_UI_TX ? ' (the first ' + MAX_UI_TX + ' are drawn and listed)' : ''), 'clock measured ' + fmtNum(dec.sclHz / 1000, 1) + ' kHz', note];
     if (bus) { const ok = JSON.stringify(L.i2cToEvents(dec)) === JSON.stringify(bus.map((e) => ({ dir: e.dir, addr: e.addr, bytes: e.ack ? e.bytes : [], ack: e.ack }))); parts.push(ok ? 'the decoder agrees with the bus log (every address, direction, byte and ACK matches)' : 'DECODER DISAGREES with the bus log'); }
     if (dec.errors.length) parts.push(dec.errors.length + ' decode warning(s): ' + dec.errors.map((e) => e.text).slice(0, 3).join('; '));
     $('i2cSummary').textContent = parts.filter(Boolean).join(' · ');
@@ -110,6 +114,7 @@
     });
     $('csvGo').addEventListener('click', () => {
       try {
+        if ($('csvText').value.length > 4e6) throw new Error('That is over 4 MB of text; trim it to the part you want.');
         csvChans = L.parseCsv($('csvText').value);
         fillSelect('colScl', csvChans.map((c, i) => [i, c.name]), 0); fillSelect('colSda', csvChans.map((c, i) => [i, c.name]), Math.min(1, csvChans.length - 1));
         $('cols').style.display = ''; runI2c();

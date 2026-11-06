@@ -246,6 +246,57 @@ const world = (seed = 1) => {
   check('broker: wildcard in a publish topic, a bad filter and a duplicate client id are rejected', threw && threw2 && threw3);
 }
 
+// ---- regression: found by the independent review --------------------------------------------------------------------------------------
+{
+  // a device that dies during a broker outage must still get its will published once the broker is back
+  const { clock, broker } = world();
+  const got = [];
+  broker.connect('w', { link: { latencyMs: 0 } }).subscribe('status/#', 0, (m) => got.push(m.payload));
+  const n = broker.connect('n', { keepAliveS: 10, link: { latencyMs: 0 }, will: { topic: 'status/n', payload: 'offline', qos: 0, retain: false } });
+  clock.run(1000);
+  broker.setUp(false);
+  n.kill();
+  clock.run(5000);
+  broker.setUp(true);
+  clock.run(60000);
+  check(
+    'broker: a client killed during a broker outage still gets its last-will published after the broker returns',
+    got.includes('offline') && broker.stats.wills === 1,
+    JSON.stringify(got),
+  );
+}
+{
+  // a client the broker timed out but that is still alive must be able to come back
+  const { clock, broker } = world();
+  const got = [];
+  let reconnects = 0;
+  broker.connect('w', { keepAliveS: 0, link: { latencyMs: 0 } }).subscribe('t/#', 0, (m) => got.push(m.payload));
+  const n = broker.connect('n', {
+    keepAliveS: 10,
+    link: { latencyMs: 0 },
+    onReconnect: () => {
+      reconnects++;
+    },
+    will: { topic: 't/status', payload: 'offline', qos: 0, retain: false },
+  });
+  n.setLink({ loss: 1 });
+  clock.run(40000);
+  check(
+    'broker: with every packet lost for longer than 1.5 x keep-alive the broker declares the client gone (will published)',
+    got.includes('offline') && n.connected === false,
+  );
+  n.setLink({ loss: 0 });
+  n.publish('t/data', 'x');
+  clock.run(41000);
+  check(
+    'broker: the first message after the outage re-registers the client, which is told so (it can announce itself again)',
+    n.connected === true && reconnects === 1 && got.includes('x'),
+    JSON.stringify([n.connected, reconnects, got]),
+  );
+  clock.run(41000 + 14000);
+  check('broker: after reconnecting it is watched again (no second will while it keeps talking)', broker.stats.wills === 1);
+}
+
 // ---- power budget -----------------------------------------------------------------------------------------------------------------
 {
   // Sleep 5 uA, awake 10 mA for 100 ms, transmit 80 mA for 50 ms, every 60 s, 2000 mAh cell.

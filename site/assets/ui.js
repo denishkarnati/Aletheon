@@ -49,7 +49,12 @@
     if (opts.min !== undefined) inp.min = opts.min;
     if (opts.max !== undefined) inp.max = opts.max;
     inp.setAttribute('aria-label', label);
-    inp.addEventListener('input', function () { var v = Number(inp.value); if (inp.value !== '' && isFinite(v)) set(v); });
+    inp.addEventListener('input', function () {
+      var v = Number(inp.value);
+      if (inp.value === '' || !isFinite(v)) return;
+      if ((opts.min !== undefined && v < opts.min) || (opts.max !== undefined && v > opts.max)) return; // the HTML min/max are only hints, so enforce them here
+      set(v);
+    });
     row.appendChild(inp);
     return row;
   }

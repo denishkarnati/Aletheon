@@ -127,7 +127,7 @@
     function route(msg, fromId) {
       if (msg.retain) { if (msg.payload === '') retained.delete(msg.topic); else retained.set(msg.topic, { ...msg, dup: false }); }
       for (const c of clients.values()) {
-        if (!c.alive) continue;
+        if (!c.alive || !c.registered) continue;
         let best = -1;
         for (const s of c.subs) if (topicMatches(s.filter, msg.topic)) best = Math.max(best, s.qos);
         if (best < 0) continue;
@@ -168,19 +168,22 @@
       const c = {
         id, alive: true, registered: true, subs: [], will: o.will || null, keepAliveS: o.keepAliveS === undefined ? 60 : o.keepAliveS,
         link: { ...DEFAULT_LINK, ...(o.link || {}) }, retryMs: o.retryMs || 3000, maxRetries: o.maxRetries === undefined ? 3 : o.maxRetries,
-        inflight: new Set(), watchdog: null, lastSent: clock.now, onTx: o.onTx || null,
+        inflight: new Set(), watchdog: null, lastSent: clock.now, onTx: o.onTx || null, onReconnect: o.onReconnect || null,
       };
       c.brokerSide = { id: 'broker->' + id, inflight: new Set(), retryMs: c.retryMs, maxRetries: c.maxRetries };
       clients.set(id, c);
       note('connect', { client: id });
       armWatchdog(c);
-      const heard = () => armWatchdog(c); // the broker received something from this client
+      const heard = () => { // the broker received something from this client
+        if (!c.registered && c.alive) { c.registered = true; note('reconnect', { client: id }); if (c.onReconnect) c.onReconnect(); } // it was timed out but is still there: it reconnects
+        armWatchdog(c);
+      };
       let pingTimer = null;
       const schedulePing = () => { // a PINGREQ is due one keep-alive after the last thing this client SENT
         if (!c.keepAliveS) return;
         pingTimer = clock.after(Math.max(0, c.lastSent + c.keepAliveS * 1000 - clock.now), () => {
           if (!c.alive) return;
-          if (clock.now - c.lastSent >= c.keepAliveS * 1000) { c.lastSent = clock.now; transmit(c.link, () => c.alive, heard, 'dropped'); }
+          if (clock.now - c.lastSent >= c.keepAliveS * 1000) { c.lastSent = clock.now; if (c.onTx) c.onTx(1); transmit(c.link, () => c.alive, heard, 'dropped'); }
           schedulePing();
         });
       };
@@ -234,7 +237,7 @@
       setUp(v) { // a broker outage: nothing is delivered and no timers run; when it returns, clients get a fresh keep-alive window
         if (v === up) return;
         up = v; note(v ? 'broker-up' : 'broker-down', {});
-        for (const c of clients.values()) { if (!v) { clock.cancel(c.watchdog); c.watchdog = null; } else if (c.alive) armWatchdog(c); }
+        for (const c of clients.values()) { if (!v) { clock.cancel(c.watchdog); c.watchdog = null; } else armWatchdog(c); }
       },
       clientIds() { return [...clients.keys()]; },
     };

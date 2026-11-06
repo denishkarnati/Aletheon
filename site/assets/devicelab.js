@@ -77,7 +77,7 @@
     cur.facts.forEach(function (f) { addCard(f.text, f.cite, f.derived); });
     var nm = $('nm'); nm.textContent = ''; cur.notModeled.forEach(function (t) { nm.appendChild(el('li', '', t)); });
     var s = $('srcbox'); s.textContent = '';
-    var line = function (k, v, href) { var d = el('div'); d.appendChild(el('b', '', k + ': ')); if (href) { var a = el('a', '', v); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.style.textDecoration = 'underline'; d.appendChild(a); } else d.appendChild(document.createTextNode(v)); s.appendChild(d); };
+    var line = function (k, v, href) { var d = el('div'); d.appendChild(el('b', '', k + ': ')); if (href && /^https:\/\//.test(href)) { var a = el('a', '', v); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.style.textDecoration = 'underline'; d.appendChild(a); } else d.appendChild(document.createTextNode(v)); s.appendChild(d); };
     line('Source', cur.vendor + ' ' + cur.part + ' datasheet ' + cur.source.doc + ', ' + cur.source.rev);
     line('Official copy', cur.source.url, cur.source.url);
     line('SHA-256 of the checked PDF', cur.source.sha256);
@@ -137,7 +137,8 @@
   renderPicker();
   $('toAna').addEventListener('click', function () {
     if (!lastBus) return;
-    try { sessionStorage.setItem('aletheon.capture', JSON.stringify({ source: 'Device Lab (' + cur.part + ')', t: 0, events: lastBus.slice(0, 2000) })); } catch (e) { /* storage blocked: the Analyzer then opens without it */ }
+    var budget = 20000, ev = lastBus.slice(0, 2000).filter(function (e) { budget -= (e.bytes || []).length; return budget >= 0; }); // cap the size handed to the Analyzer
+    try { sessionStorage.setItem('aletheon.capture', JSON.stringify({ source: 'Device Lab (' + cur.part + ')', t: 0, events: ev })); } catch (e) { /* storage blocked: the Analyzer then opens without it */ }
     window.location.href = 'analyzer.html#capture';
   });
   $('run').addEventListener('click', run);

@@ -42,7 +42,7 @@
       s.setAttribute('width', W); s.setAttribute('height', H);
       // ruler
       const step = niceStep(span(), Math.max(3, Math.floor(w / 110)));
-      for (let t = Math.ceil(view.t0 / step) * step; t <= view.t1; t += step) {
+      for (let t = Math.ceil(view.t0 / step) * step, n = 0; t <= view.t1 && n < 200 && t + step > t; t += step, n++) { // capped: a huge time with a tiny step must not hang the page
         const x = X(t);
         s.appendChild(svg('line', { x1: x, x2: x, y1: RULER - 4, y2: H - 4, class: 'gr' }));
         const tx = svg('text', { x: x + 3, y: 12, class: 'tk' }); tx.textContent = fmtTime(t, step); s.appendChild(tx);
