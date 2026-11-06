@@ -60,6 +60,34 @@ async function main(): Promise<void> {
     list.result.tools.every((t: any) => t.inputSchema?.type === 'object'),
   );
 
+  check(
+    'tools/list: the part-number tools are offered to MCP clients (Codex and others)',
+    ['find_datasheet', 'device_model', 'simulate_i2c'].every((n) => names.includes(n)),
+    names.join(','),
+  );
+  const dm = await call('device_model', { part: 'TMP117' });
+  check(
+    'tools/call device_model over MCP: address, strap and a page-cited quote come back with evidence ids',
+    /\[E\d+\]/.test(dm) && dm.includes('0x48 (ADD0 to GND)') && /datasheet p\.\d+/.test(dm),
+  );
+  const sim = await call('simulate_i2c', {
+    part: 'TMP117',
+    ops: [
+      { op: 'write', addr: 0x49, bytes: [0x0f] },
+      { op: 'write', addr: 0x48, bytes: [0x0f] },
+      { op: 'read', addr: 0x48, n: 2 },
+    ],
+  });
+  check(
+    'tools/call simulate_i2c over MCP: the wrong address NACKs and Device_ID reads 0x0117 at the right one',
+    sim.includes('NACK: nothing answers at 0x49') && sim.includes('-> [0x01 0x17]'),
+  );
+  const ledgerText = await call('show_ledger', {});
+  check(
+    'the simulation and the model are in the evidence ledger an MCP client can read back',
+    /simulate_i2c TMP117/.test(ledgerText) && /SNOSD82D|tmp117/i.test(ledgerText),
+  );
+
   const boards = await call('list_boards', {});
   check('tools/call list_boards: selected board marked', boards.includes('rpi-pico (selected)'));
   const gc = JSON.parse(await call('ground_check', { text: 'UARTFR is at 0x40034018 [E99].' }));

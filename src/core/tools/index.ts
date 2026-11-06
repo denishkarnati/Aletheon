@@ -3,6 +3,7 @@
 import { errorMessage } from '../util';
 import { auditTools } from './audit';
 import { Tool, ToolCtx } from './context';
+import { deviceTools } from './devices';
 import { docTools } from './docs';
 import { hardwareTools } from './hardware';
 import { reaTools } from './rea';
@@ -17,6 +18,9 @@ const ORDER = [
   'detect_boards',
   'index_datasheet',
   'search_datasheets',
+  'find_datasheet',
+  'device_model',
+  'simulate_i2c',
   'index_svd',
   'lookup_register',
   'generate_regs_header',
@@ -31,7 +35,7 @@ const ORDER = [
   'serial_capture',
   'rea_run',
 ];
-const ALL = [...hardwareTools, ...docTools, ...registerTools, ...auditTools, ...workspaceTools, ...reaTools];
+const ALL = [...hardwareTools, ...docTools, ...deviceTools, ...registerTools, ...auditTools, ...workspaceTools, ...reaTools];
 export const TOOLS: Tool[] = ORDER.map((n) => {
   const t = ALL.find((x) => x.name === n);
   if (!t) throw new Error(`tool ${n} missing from the registry`);

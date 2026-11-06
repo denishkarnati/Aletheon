@@ -254,6 +254,9 @@ If a vendor updates a file, the hash changes. That is intended: the ledger recor
 | `detect_boards` | Finds boards and serial ports that are physically connected | | serial (measured) |
 | `index_datasheet` | Downloads or reads a PDF/HTML file and indexes it with page numbers | | datasheet |
 | `search_datasheets` | Returns ~900-character passages with page numbers | | datasheet |
+| `find_datasheet` | Part number to candidate datasheet links, from the parts catalog (a pointer, never evidence) | | web (community-mirror) |
+| `device_model` | Datasheet-checked model of a part: I2C addresses with straps, registers, behaviours, each with a page-cited quote | | datasheet (derived) |
+| `simulate_i2c` | Runs a planned I2C operation list against that model: ACK/NACK, bytes, explanations, warnings | | sim (derived) |
 | `index_svd` | Parses an SVD, or the SVD inside a CMSIS `.pack`/`.zip` | | svd |
 | `lookup_register` | Address, reset value, access and bit fields from the SVD | | svd |
 | `cross_check_register` | SVD vs datasheet: agree / conflict / name-only / not-found | | svd + datasheet |

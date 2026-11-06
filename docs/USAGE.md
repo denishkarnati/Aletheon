@@ -16,7 +16,17 @@ troubleshooting. Status: **alpha**. Register-map tooling is tested against real 
 git clone https://github.com/denishkarnati/aletheon
 cd aletheon && npm install && npm run build
 ```
-Register `node /path/to/aletheon/dist/mcp.js` as a stdio MCP server with these environment variables:
+Register `node /path/to/aletheon/dist/mcp.js` as a stdio MCP server with these environment variables. In OpenAI Codex (CLI or IDE extension) add it to
+`~/.codex/config.toml`:
+```toml
+[mcp_servers.aletheon]
+command = "node"
+args = ["/path/to/aletheon/dist/mcp.js"]
+env = { ALETHEON_ROOT = "/path/to/your/firmware", ALETHEON_BOARD = "rpi-pico" }
+```
+(Claude Code: `claude mcp add aletheon -- node /path/to/aletheon/dist/mcp.js`.) The server speaks MCP over stdio and has been driven end to end by the
+test suite with a scripted client; it has not yet been tried inside Codex itself. In an MCP client, the model that writes the code is the client's own.
+The environment variables are:
 
 | Variable | Meaning |
 |---|---|
@@ -53,6 +63,16 @@ It reports which steps were actually done. A driver that compiles has not been s
 Paste text into a chat with the `audit_claims` tool available (MCP name: `ground_check`). Each sentence with a hardware value (hex address,
 voltage, current, frequency, timing, pin) needs an `[E#]` whose excerpt contains that value. You get a list of unsupported, uncited and
 unknown-citation claims, and a note for claims that rest only on community-mirror sources.
+
+### C2. Start from a part number (sensor / I2C drivers)
+> "Write a driver for a TMP117 on my board. What is its I2C address and how do I read the temperature?"
+
+The assistant calls `find_datasheet` (part number to the datasheet link), `index_datasheet` and `search_datasheets` to cite the address and register
+passages, then `device_model` and `simulate_i2c` to check its planned sequence (address, register pointer, configuration word, result decoding)
+against a datasheet-checked model before it tells you the driver is right. Modeled parts today: TMP117, INA219, INA226, ADS1115. For any other part
+the simulator is not available and the assistant must cite the indexed datasheet or say `UNVERIFIED`. A simulation shows the sequence matches the
+documented behaviour; it is not proof that the code works on a board. Only build, flash and serial capture show that.
+`find_datasheet` fetches the website's parts catalog once (cached for 7 days in `.aletheon/cache`); set `ALETHEON_PARTS_URL` to use another https copy.
 
 ### D. Check a register map against a datasheet
 Index both, then call `cross_check_register` with a peripheral and register. Verdicts: **agree**, **conflict**, **name-only**, **not-found**.

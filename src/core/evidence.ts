@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { TrustClass, classifyTrust } from './provenance';
 
-export type EvidenceKind = 'datasheet' | 'serial' | 'build' | 'flash' | 'web' | 'rea' | 'svd' | 'file' | 'user';
+export type EvidenceKind = 'datasheet' | 'serial' | 'build' | 'flash' | 'web' | 'rea' | 'svd' | 'file' | 'user' | 'sim';
 
 export interface Evidence {
   id: string;
@@ -24,6 +24,7 @@ const DEFAULT_TRUST: Record<EvidenceKind, TrustClass | undefined> = {
   build: 'measured',
   flash: 'measured',
   rea: 'derived',
+  sim: 'derived',
   user: 'user-supplied',
   file: 'user-supplied',
   datasheet: undefined,

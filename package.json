@@ -179,6 +179,7 @@
     "test:agent": "esbuild test/agent.test.ts --bundle --platform=node --outfile=dist/agent.test.js --log-level=warning && node dist/agent.test.js",
     "test:mcp": "npm run build && esbuild test/mcp.test.ts --bundle --platform=node --outfile=dist/mcp.test.js --log-level=warning && node dist/mcp.test.js",
     "test:net": "esbuild test/net.test.ts --bundle --platform=node --outfile=dist/net.test.js --log-level=warning && node dist/net.test.js",
+    "test:devices": "esbuild test/devices.test.ts --bundle --platform=node --outfile=dist/devices.test.js --log-level=warning && node dist/devices.test.js",
     "test:db": "esbuild test/db.test.ts --bundle --platform=node --external:@electric-sql/pglite --outfile=dist/db.test.js --log-level=warning && node dist/db.test.js",
     "test:driver": "esbuild test/driver-safety.test.ts --bundle --platform=node --outfile=dist/driver-safety.test.js --log-level=warning && node dist/driver-safety.test.js",
     "test:hardening": "npm run build && esbuild test/hardening.test.ts --bundle --platform=node --outfile=dist/hardening.test.js --log-level=warning && node dist/hardening.test.js",
@@ -191,7 +192,7 @@
     "test:headers": "esbuild test/headers.test.ts --bundle --platform=node --outfile=dist/headers.test.js --log-level=warning && node dist/headers.test.js",
     "build": "node build.mjs",
     "package": "npm run build && vsce package",
-    "test": "npm run test:unit && npm run test:agent && npm run test:mcp && npm run test:net && npm run test:driver && npm run test:hardening && npm run test:embeddings && npm run test:audit && npm run test:db && npm run bench:grounding",
+    "test": "npm run test:unit && npm run test:agent && npm run test:mcp && npm run test:net && npm run test:driver && npm run test:hardening && npm run test:embeddings && npm run test:audit && npm run test:devices && npm run test:db && npm run bench:grounding",
     "vsix": "npm run build && npx --yes @vscode/vsce package --no-dependencies",
     "examples": "esbuild scripts/run-examples.ts --bundle --platform=node --outfile=dist/run-examples.js --log-level=warning && node dist/run-examples.js",
     "evidence": "node scripts/evidence-report.mjs"
