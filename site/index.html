@@ -2863,6 +2863,44 @@
           animation: none;
         }
       }
+      .plat {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+        margin-top: 30px;
+      }
+      .pcard {
+        display: block;
+        border: 1px solid var(--ln);
+        border-radius: var(--r);
+        padding: 22px;
+        background: var(--bg1);
+        transition:
+          border-color 0.25s,
+          transform 0.35s var(--ease);
+      }
+      .pcard:hover {
+        border-color: var(--ln2);
+        transform: translateY(-2px);
+      }
+      .pcard b {
+        display: block;
+        font-size: 19px;
+        letter-spacing: -0.02em;
+        margin-bottom: 6px;
+      }
+      .pcard span {
+        color: var(--tx2);
+        font-size: 14px;
+      }
+      .pcard small {
+        display: block;
+        margin-top: 14px;
+        font: 11px var(--mono);
+        color: var(--tx3);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
     </style>
     <link rel="stylesheet" href="assets/nav.css" />
   </head>
@@ -2892,7 +2930,7 @@
       >
       <div class="links">
         <a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html">Bench</a><a href="analyzer.html">Analyzer</a
-        ><a href="labs.html">Labs</a>
+        ><a href="labs.html">Labs</a><a href="docs.html">Docs</a>
       </div>
       <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
     </nav>
@@ -2931,6 +2969,7 @@
                 <path d="M5 12h14M13 6l6 6-6 6" /></svg
             ></a>
             <a class="btn ghost" href="#how">See how it works</a>
+            <a class="btn ghost" href="#platform">Explore the tools</a>
           </div>
           <div class="meta fade d3"><span>VS Code extension</span><span>MCP server</span><span>Local-first</span><span>No telemetry</span></div>
 
@@ -3016,6 +3055,43 @@
       <!-- MARQUEE -->
       <div class="marq" aria-label="Supported boards and integrations"><div class="track" id="track"></div></div>
       <div class="marq rev" aria-hidden="true"><div class="track" id="track2"></div></div>
+
+      <!-- PLATFORM -->
+      <section id="platform">
+        <div class="wrap">
+          <div class="idx rv">Platform</div>
+          <h2 class="t2 rv">An embedded workbench, not just an assistant.</h2>
+          <p class="lead rv">
+            Besides the extension, this site is a free set of embedded-systems tools. Everything runs in your browser, with no account and nothing uploaded.
+            Where a tool simulates something, it says plainly that it is a behavioral model and lists what it leaves out.
+          </p>
+          <div class="plat">
+            <a class="pcard" href="atlas.html"
+              ><b>Chip Atlas</b><span>1,000+ real boards and microcontrollers from public manifests: filter, chart, compare, export.</span
+              ><small>catalog</small></a
+            >
+            <a class="pcard" href="parts.html"
+              ><b>Parts catalog</b><span>9,000+ KiCad-derived parts with datasheet and vendor links.</span><small>catalog</small></a
+            >
+            <a class="pcard" href="lab.html"
+              ><b>Device Lab</b><span>Run your driver code against register-level models checked against the vendor datasheet.</span><small>simulator</small></a
+            >
+            <a class="pcard" href="bench.html"
+              ><b>IoT Bench</b><span>Virtual sensor nodes, an MQTT-style broker, fault injection and a battery budget.</span><small>simulator</small></a
+            >
+            <a class="pcard" href="analyzer.html"
+              ><b>Logic Analyzer</b><span>I²C, SPI, UART, PWM and GPIO waveforms, decoded. Import a real capture.</span><small>simulator</small></a
+            >
+            <a class="pcard" href="labs.html"
+              ><b>Scenario Labs</b><span>Five guided problems: a NACK, a −256 °C reading, a coin-cell brown-out, a baud rate, a power budget.</span
+              ><small>guided</small></a
+            >
+            <a class="pcard" href="docs.html"
+              ><b>Documentation</b><span>Guides, the evidence method, and what each simulator leaves out.</span><small>learn</small></a
+            >
+          </div>
+        </div>
+      </section>
 
       <!-- PROBLEM -->
       <section id="problem">
@@ -3471,7 +3547,10 @@
             <header>
               <span class="dots"><i></i><i></i><i></i></span> install the extension<button class="copy" data-copy>Copy</button>
             </header>
-            <pre><span class="c"># download aletheon-0.1.0.vsix from the latest release, then:</span>
+            <pre><span class="c"># no published release yet, so build the .vsix yourself (Node.js 20+):</span>
+<span class="p">$ </span>git clone https://github.com/denishkarnati/Aletheon &amp;&amp; cd Aletheon
+<span class="p">$ </span>npm install &amp;&amp; npm run vsix
+<span class="c"># then install the file it produced:</span>
 <span class="p">$ </span>code --install-extension aletheon-0.1.0.vsix
 <span class="c"># Aletheon: Set AI Provider API Key → pick a board in the status bar</span></pre>
           </div>
@@ -3697,12 +3776,14 @@
           </div>
           <div>
             <h4>Learn</h4>
-            <a href="index.html#install">Install the extension</a>
+            <a href="docs.html">Documentation</a><a href="docs.html#methodology">How the models are checked</a
+            ><a href="docs.html#limits">What the simulators leave out</a><a href="index.html#install">Install the extension</a>
           </div>
           <div>
             <h4>Project</h4>
-            <a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
-            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="privacy.html">Privacy and legal</a>
+            <a href="about.html">About and contact</a><a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="about.html#security">Report a security problem</a
+            ><a href="privacy.html">Privacy and legal</a>
           </div>
         </div>
         <div class="legal">
@@ -3715,17 +3796,6 @@
       </div>
     </footer>
     <!-- /chrome:footer -->
-
-    <footer>
-      <div class="wrap">
-        <div>Aletheon · truth from hardware, not from memory.</div>
-        <div style="display: flex; gap: 22px; flex-wrap: wrap">
-          <a href="https://github.com/denishkarnati/aletheon">GitHub</a><a href="https://github.com/denishkarnati/aletheon/blob/main/SECURITY.md">Security</a
-          ><a href="https://github.com/denishkarnati/aletheon/blob/main/LICENSE">Apache-2.0</a><a href="privacy.html">Privacy and legal</a
-          ><span>Independent project, not affiliated with any other product.</span>
-        </div>
-      </div>
-    </footer>
 
     <script src="assets/atlas-meta.js"></script>
     <script src="assets/rp2040-data.js"></script>

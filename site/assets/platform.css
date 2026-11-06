@@ -979,6 +979,7 @@ svg.chart .dot {
 }
 .prose code,
 code.i {
+  overflow-wrap: anywhere;
   font: 12.5px var(--mono);
   background: var(--bg2);
   border: 1px solid var(--ln);
@@ -1112,3 +1113,41 @@ textarea.ta {
   resize: vertical;
 }
 
+
+/* docs layout */
+.docs {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+.toc {
+  position: sticky;
+  top: 90px;
+  font-size: 14px;
+}
+.toc summary {
+  font: 600 11px var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.toc a {
+  display: block;
+  padding: 5px 0;
+  color: var(--tx2);
+}
+.toc a:hover {
+  color: var(--tx);
+}
+@media (max-width: 900px) {
+  .docs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .toc {
+    position: static;
+  }
+}

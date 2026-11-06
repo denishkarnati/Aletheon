@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About and contact · Aletheon</title>
+    <meta
+      name="description"
+      content="What Aletheon is, the rules it holds itself to, who maintains it, how to reach the project, and how to report a security problem privately."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="About and contact · Aletheon" />
+    <meta property="og:description" content="An open, evidence-first embedded-systems project." />
+    <meta property="og:image" content="assets/og.png" />
+    <link rel="stylesheet" href="assets/platform.css" />
+    <link rel="stylesheet" href="assets/nav.css" />
+  </head>
+  <body>
+    <a class="skip" href="#about">Skip to the content</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links">
+        <a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html">Bench</a><a href="analyzer.html">Analyzer</a
+        ><a href="labs.html">Labs</a><a href="docs.html">Docs</a>
+      </div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">About and contact</div>
+          <h1>Truth from hardware, <em>not from memory.</em></h1>
+          <p class="sub">
+            Aletheon is an open-source project that makes embedded-systems AI and tooling accountable to evidence: a firmware assistant that cites the datasheet
+            text behind every register, voltage and timing it states, and a set of free browser tools for learning and testing embedded designs.
+          </p>
+        </div>
+      </header>
+
+      <div class="wrap">
+        <div class="stat" id="statFacts" style="margin-top: 10px"></div>
+        <article class="prose" id="about">
+          <h2>What it is</h2>
+          <ul>
+            <li>
+              <b>A VS Code extension and an MCP server</b> that read datasheets and register maps, and audit their own answers: a claim that cannot cite
+              evidence containing its value is flagged. See <a href="index.html">the home page</a>.
+            </li>
+            <li><b>A Chip Atlas and a Parts catalog</b> built from public sources, with datasheet and vendor links.</li>
+            <li>
+              <b>Simulators</b>: the <a href="lab.html">Device Lab</a>, the <a href="bench.html">IoT Bench</a>, the
+              <a href="analyzer.html">Logic Analyzer</a> and the <a href="labs.html">Scenario Labs</a>.
+            </li>
+          </ul>
+
+          <h2>Rules it holds itself to</h2>
+          <ul>
+            <li>
+              <b>Evidence first.</b> A hardware fact on this site is either tied to a page-cited quote from the vendor's datasheet, or visibly labelled as
+              derived, assumed or weaker.
+            </li>
+            <li>
+              <b>No copying.</b> Facts are written in our own words with short quotes (never more than 15 words) as evidence. Datasheet PDFs and figures are not
+              hosted here.
+            </li>
+            <li>
+              <b>Honest simulators.</b> Every simulator says it is a behavioral model, not a circuit simulation, and lists what it leaves out. See
+              <a href="docs.html#limits">the list</a>.
+            </li>
+            <li>
+              <b>No invented endorsements.</b> There are no testimonials, customer logos or partner claims on this site because there are none to show. Aletheon
+              is independent and is not affiliated with or endorsed by any chip vendor.
+            </li>
+            <li>
+              <b>Local-first.</b> The tools run in your browser. No accounts, no analytics, nothing uploaded. See <a href="privacy.html">Privacy and legal</a>.
+            </li>
+          </ul>
+
+          <h2>Who maintains it</h2>
+          <p>
+            Aletheon is created and maintained by Dinesh Karnati and released under the
+            <a href="https://github.com/denishkarnati/Aletheon/blob/main/LICENSE">Apache-2.0 license</a>. It is an early-stage project (version 0.1.0, alpha).
+            Contributions are welcome; see <a href="docs.html#contribute">Contributing</a> and the
+            <a href="https://github.com/denishkarnati/Aletheon/blob/main/CODE_OF_CONDUCT.md">code of conduct</a>.
+          </p>
+
+          <h2 id="contact">Contact</h2>
+          <ul>
+            <li>
+              <b>Questions, bugs and ideas:</b> <a href="https://github.com/denishkarnati/Aletheon/issues">open a GitHub issue</a>. This is the project's only
+              public contact channel.
+            </li>
+            <li><b>Source code:</b> <a href="https://github.com/denishkarnati/Aletheon">github.com/denishkarnati/Aletheon</a>.</li>
+          </ul>
+
+          <h2 id="security">Report a security problem</h2>
+          <p>
+            Please do not open a public issue for something exploitable. Use GitHub's private
+            <a href="https://github.com/denishkarnati/Aletheon/security/advisories/new">vulnerability report</a> form, and include steps to reproduce, the
+            affected version and your assessment of the impact. The full policy, including what the project defends against and what it does not, is in
+            <a href="https://github.com/denishkarnati/Aletheon/blob/main/SECURITY.md">SECURITY.md</a>. This is a volunteer-run project: we aim to acknowledge a
+            report within 5 working days, and there is no bounty program. A machine-readable copy of this is at
+            <a href="https://denishkarnati.github.io/Aletheon/.well-known/security.txt">/.well-known/security.txt</a>.
+          </p>
+
+          <h2>Trademarks and data</h2>
+          <p>
+            Part names and numbers belong to their owners and appear only to identify parts. The parts catalog data is derived from the KiCad symbol libraries
+            and shared under CC BY-SA 4.0. The Chip Atlas is built from public board manifests listed on its page.
+          </p>
+        </article>
+      </div>
+    </main>
+    <!-- chrome:footer -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <div class="brandline">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+                <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+                  <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+                </g>
+                <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+              >Aletheon
+            </div>
+            <p>
+              An evidence-grounded firmware assistant, with a free, open set of embedded-systems tools: a board atlas, a parts catalog, datasheet-checked device
+              models and IoT simulators.
+            </p>
+          </div>
+          <div>
+            <h4>Platform</h4>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a
+            ><a href="analyzer.html">Logic Analyzer</a><a href="labs.html">Scenario Labs</a>
+          </div>
+          <div>
+            <h4>Learn</h4>
+            <a href="docs.html">Documentation</a><a href="docs.html#methodology">How the models are checked</a
+            ><a href="docs.html#limits">What the simulators leave out</a><a href="index.html#install">Install the extension</a>
+          </div>
+          <div>
+            <h4>Project</h4>
+            <a href="about.html">About and contact</a><a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="about.html#security">Report a security problem</a
+            ><a href="privacy.html">Privacy and legal</a>
+          </div>
+        </div>
+        <div class="legal">
+          <p>
+            Open source under Apache-2.0. Aletheon is independent and is not affiliated with, sponsored by or endorsed by any chip vendor named on this site.
+            Part names and numbers belong to their owners. Simulators here are behavioral models, not circuit simulations, and never a substitute for the
+            current official datasheet or for testing on real hardware.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:footer -->
+
+    <script src="assets/site-stats.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/docs.js"></script>
+  </body>
+</html>

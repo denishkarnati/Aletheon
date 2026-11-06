@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documentation · Aletheon</title>
+    <meta
+      name="description"
+      content="Guides for the Aletheon platform: the Device Lab, IoT Bench, Logic Analyzer and Scenario Labs, how every model is checked against datasheets, the formulas used, what each simulator leaves out, and how to contribute."
+    />
+    <meta name="theme-color" content="#07080A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Documentation · Aletheon" />
+    <meta property="og:description" content="Guides, method and limits for the Aletheon embedded-systems tools." />
+    <meta property="og:image" content="assets/og.png" />
+    <link rel="stylesheet" href="assets/platform.css" />
+    <link rel="stylesheet" href="assets/nav.css" />
+  </head>
+  <body>
+    <a class="skip" href="#start">Skip to the documentation</a>
+    <nav class="pill" aria-label="Primary">
+      <a class="brand" href="index.html" aria-label="Aletheon home"
+        ><svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+          <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+            <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+          </g>
+          <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+        >Aletheon</a
+      >
+      <div class="links">
+        <a href="atlas.html">Atlas</a><a href="parts.html">Parts</a><a href="lab.html">Lab</a><a href="bench.html">Bench</a><a href="analyzer.html">Analyzer</a
+        ><a href="labs.html">Labs</a><a href="docs.html" class="on">Docs</a>
+      </div>
+      <a class="btn primary sm" href="https://github.com/denishkarnati/Aletheon">GitHub</a>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <div class="idx">Documentation</div>
+          <h1>How it works, <em>and how far to trust it.</em></h1>
+          <p class="sub">
+            Short guides for each tool, the method behind the datasheet-checked models, the formulas the simulators use, and a plain list of what they leave
+            out.
+          </p>
+        </div>
+      </header>
+
+      <div class="wrap docs">
+        <aside class="toc" aria-label="On this page">
+          <details open>
+            <summary>On this page</summary>
+            <a href="#start">Getting started</a>
+            <a href="#lab">Device Lab</a>
+            <a href="#bench">IoT Bench</a>
+            <a href="#analyzer">Logic Analyzer</a>
+            <a href="#labs">Scenario Labs</a>
+            <a href="#models">Models</a>
+            <a href="#methodology">How models are checked</a>
+            <a href="#formulas">Formulas</a>
+            <a href="#limits">What is left out</a>
+            <a href="#extension">The extension</a>
+            <a href="#contribute">Contributing</a>
+          </details>
+        </aside>
+
+        <article class="prose">
+          <h2 id="start">Getting started</h2>
+          <p>
+            Everything here runs in your browser. There is no account, nothing is uploaded and no tracking script is loaded (see
+            <a href="privacy.html">Privacy and legal</a>). A good first ten minutes:
+          </p>
+          <ol>
+            <li>Open the <a href="lab.html">Device Lab</a>, pick the TMP117, press Run, and read the bus log line by line.</li>
+            <li>Press "Open this bus log in the Logic Analyzer" to see the same transactions as clock and data waveforms.</li>
+            <li>
+              Open the <a href="bench.html">IoT Bench</a>, click "Unplug TMP117" on the greenhouse node, and watch the dashboard and the message log react.
+            </li>
+            <li>
+              Try the <a href="labs.html">Scenario Labs</a> in order. Each can be solved, and fails for a visible reason if you do the obvious wrong thing.
+            </li>
+          </ol>
+          <p>
+            Every simulator on this site is a <b>behavioral model</b>: it reproduces specific, documented behavior, not the physics of a circuit. Each page
+            lists what it leaves out, and the <a href="#limits">consolidated list</a> is below.
+          </p>
+
+          <h2 id="lab">Device Lab</h2>
+          <p>
+            Write JavaScript that talks I²C to a model of a real part. It runs in a sandboxed Web Worker with a time limit and no network access. The functions
+            available to your code:
+          </p>
+          <pre>
+i2c.write(addr, [bytes])        // throws on NACK
+i2c.read(addr, n)               // returns [bytes]
+i2c.readReg16(addr, reg)        // pointer write, then a 2-byte read
+i2c.writeReg16(addr, reg, v)    // big-endian 16-bit write
+i2c.scan()                      // addresses that answer
+delay(ms)                       // advances simulated time, not real time
+log(...values)  hex(n)  toInt16(n)
+sim.set('name', value)          // change a physical input while the program runs
+sim.get('name')</pre>
+          <p>
+            Each bus event is logged with a plain-language explanation. "Physical world" sliders set the starting values of the sensor's inputs, for example a
+            temperature or a shunt current. A link such as <code>lab.html#tmp117&amp;code=…</code> can place a program in the editor; it is never run until you
+            press Run.
+          </p>
+
+          <h2 id="bench">IoT Bench</h2>
+          <p>A fleet of virtual nodes, each with a battery, one or more modeled sensors, and a link to an MQTT-style broker.</p>
+          <h3>What a node does</h3>
+          <p>
+            It wakes every <i>period</i>, reads each sensor over a virtual I²C bus using the same register arithmetic as the Device Lab, publishes the results,
+            and sleeps. While it sleeps the sensors keep converting and the simulated world keeps changing.
+          </p>
+          <h3>Topics and payloads</h3>
+          <pre>
+farm/greenhouse/air      {"t":60037,"seq":2,"temperature_c":17.757813}
+farm/greenhouse/soil     {"t":60037,"seq":2,"ain0_v":2.399625}
+farm/greenhouse/diag     {"t":60037,"seq":2,"battery_v":4.2,"awake_ms":12,"brownouts":0}
+farm/greenhouse/status   online        (retained; the last-will message is "offline")</pre>
+          <p>
+            <code>t</code> is simulated time in milliseconds and <code>seq</code> counts cycles. A failed sensor adds an <code>errors</code> list to the
+            <code>diag</code> message instead of a reading.
+          </p>
+          <h3>The broker</h3>
+          <p>
+            Follows the MQTT 3.1.1 rules for topic names and filters (<code>+</code> and <code>#</code> wildcards, <code>$</code> topics), QoS 0 and 1, retained
+            messages and last-will messages. A client that goes silent is declared dead after 1.5 × its keep-alive, which is when its last-will is published.
+            There is no TCP, TLS, QoS 2 or persistent session. A "link" delays or drops whole messages.
+          </p>
+          <h3>Faults you can inject</h3>
+          <ul>
+            <li><b>Drift</b>: adds a rate (per hour) to the physical input the sensor sees, so the dashboard shows a growing gap from the true value.</li>
+            <li><b>Unplug</b>: the part stops answering; the bus log shows a NACK and the node reports it.</li>
+            <li>
+              <b>Glitch</b>: the part resets just before the next read. A TMP117 then reads 0x8000 (−256 °C) until its first conversion finishes; an INA219 or
+              INA226 reads 0 A until the calibration register is written again.
+            </li>
+            <li><b>Brown-out</b>: the node loses power and reboots; the broker publishes its last-will and the node announces itself again.</li>
+            <li><b>Link loss</b> and <b>broker outage</b>: messages are dropped; QoS 1 retries, QoS 0 does not.</li>
+          </ul>
+          <p>
+            The same seed replays the same run, including which packets were lost. The battery accelerator multiplies every current so a flat battery shows up
+            in minutes; it is a teaching aid.
+          </p>
+          <p>A page can open the Bench with settings: <code>bench.html#preset=greenhouse&amp;period=300&amp;radio=ble&amp;battery=aa2&amp;sleep=8</code>.</p>
+
+          <h2 id="analyzer">Logic Analyzer</h2>
+          <p>
+            Encoders turn transactions into digital waveforms; separate decoders read waveforms back into bytes. Both work in microseconds on edge lists, so a
+            waveform can be generated, or imported.
+          </p>
+          <ul>
+            <li>
+              <b>I²C</b>: START and STOP are SDA edges while SCL is high; 7-bit address plus the R/W bit, MSB first; ACK is SDA low on the ninth clock. Bus logs
+              from the Device Lab and the Bench open here.
+            </li>
+            <li>
+              <b>SPI</b>: the four CPOL/CPHA modes, chip select active low. Decode with a different mode than the bus uses to see exactly how a wrong mode
+              corrupts bytes. The register device is an invented teaching device, not a real part.
+            </li>
+            <li>
+              <b>UART</b>: start bit low, data LSB first, optional parity, stop bit(s). A receiver within about 3 % of the right rate still reads an 8N1 stream.
+            </li>
+            <li>
+              <b>PWM and GPIO</b>: frequency and duty measured from the edges, a hobby-servo convention (1 ms to 2 ms for 0° to 180°), and a bouncing button.
+            </li>
+          </ul>
+          <h3>Importing a capture</h3>
+          <p>Choose "Import a CSV capture" on the I²C tab. The file is read in your browser only. Expected layout:</p>
+          <pre>
+Time [s],SCL,SDA
+0,1,1
+0.0000500,1,0
+0.0000525,0,0
+…</pre>
+          <p>One row per change: time in seconds, then 0 or 1 per channel. Up to 200,000 rows and 4 MB.</p>
+
+          <h2 id="labs">Scenario Labs</h2>
+          <p>
+            Five guided problems that link the other tools together. A lab is "met" only when the model says so; progress is kept in your own browser. Each
+            lab's logic is covered by known-answer tests that check it can be solved and that the obvious wrong answer fails.
+          </p>
+
+          <h2 id="models">Models</h2>
+          <p>The datasheet-checked parts available in the Device Lab, the Bench and the Analyzer:</p>
+          <div class="tw">
+            <table>
+              <thead>
+                <tr>
+                  <th>part</th>
+                  <th>what it is</th>
+                  <th>datasheet</th>
+                  <th>registers</th>
+                  <th>behaviors</th>
+                </tr>
+              </thead>
+              <tbody id="modelRows"></tbody>
+            </table>
+          </div>
+          <p id="modelNote"></p>
+
+          <h2 id="methodology">How the models are checked</h2>
+          <ol>
+            <li>
+              <b>Written in our own words.</b> Each model describes a part's registers, addresses and formulas from its public datasheet, without copying
+              datasheet prose or figures.
+            </li>
+            <li>
+              <b>Short, page-cited quotes as evidence.</b> Every register, address and behavior carries one or more quotes of at most 15 words and the datasheet
+              page they come from.
+            </li>
+            <li>
+              <b>A script checks the quotes.</b> <code>site/tools/verify-devices.mjs</code> opens the vendor PDF you supply, confirms its SHA-256 and size match
+              the model, and confirms every quote appears on its cited page. Datasheet PDFs are never copied into the repository or hosted here; the Device Lab
+              links to the vendor's own copy.
+            </li>
+            <li>
+              <b>Known-answer tests.</b> The simulator is tested against worked examples and tables printed in the datasheet (for example the INA219 and INA226
+              worked examples and the TMP117 temperature table), so a wrong LSB, shift or formula cannot pass silently.
+            </li>
+            <li>
+              <b>Derived facts are labelled.</b> Where a behavior follows from the datasheet but is not stated in it (for example a conversion time computed
+              from a data rate), the card says "derived".
+            </li>
+          </ol>
+          <p>
+            A weaker tier exists: "driver-verified" register maps, taken from public open-source driver code at an exact commit and re-fetched by a script.
+            Those are not simulated, are visibly labelled as weaker, and should be confirmed against the official datasheet.
+          </p>
+          <p>
+            The Chip Atlas and Parts catalog are built from public sources listed on those pages; the parts data is under CC BY-SA 4.0 (see its license note).
+            Atlas and catalog entries are descriptions, not endorsements.
+          </p>
+
+          <h2 id="formulas">Formulas</h2>
+          <h3>Average current and battery life</h3>
+          <pre>
+I_avg = ( I_sleep × t_sleep + I_awake × t_awake + I_radio × t_radio ) / period  +  I_selfdischarge
+life  = capacity × usable_fraction / I_avg
+I_selfdischarge = capacity × (percent per year / 100) / 8766 h</pre>
+          <p>
+            t_awake and t_radio do not overlap, and t_sleep is what remains of the period. The radio time is the radio-on time per publish attempt, so every QoS
+            1 retry costs again.
+          </p>
+          <h3>Supply sag</h3>
+          <pre>V_supply = V_cell − I_burst × R_internal      (the node resets if V_supply drops below the MCU's minimum)</pre>
+          <h3>Sensor conversions (from the checked models)</h3>
+          <ul>
+            <li>TMP117: one count is 7.8125 m°C, two's complement; the result reads 0x8000 until the first conversion after a reset ends.</li>
+            <li>INA219: calibration = trunc(0.04096 / (Current_LSB × R_shunt)); shunt 10 µV per count; bus 4 mV per count after a shift of 3.</li>
+            <li>INA226: calibration = trunc(0.00512 / (Current_LSB × R_shunt)); shunt 2.5 µV per count; bus 1.25 mV per count.</li>
+            <li>ADS1115: counts are 187.5 µV down to 7.8125 µV depending on the range; one single-shot conversion takes 1 / data rate.</li>
+          </ul>
+          <h3>MQTT topic filters</h3>
+          <p>
+            <code>+</code> matches exactly one level, <code>#</code> matches the rest and also its parent (<code>sport/#</code> matches <code>sport</code>), and
+            neither matches a topic whose first level starts with <code>$</code>.
+          </p>
+
+          <h2 id="limits">What the simulators leave out</h2>
+          <ul>
+            <li>
+              <b>Analog behavior everywhere</b>: noise, accuracy, temperature drift of parts, rise and fall times, ringing, glitches, pull-up values and bus
+              capacitance.
+            </li>
+            <li>
+              <b>Real timing</b>: the Device Lab models conversion time, not clock-edge timing; the Analyzer's waveforms have ideal edges. Nothing checks setup,
+              hold or rise-time limits.
+            </li>
+            <li><b>The network</b>: path loss, collisions, TCP retransmission, TLS, reconnect storms, MQTT QoS 2 and persistent sessions.</li>
+            <li><b>Batteries</b>: the real discharge curve, temperature and ageing. Voltage is a straight line with a fixed series resistance.</li>
+            <li><b>The MCU</b>: its current is a number you type, not the result of running firmware.</li>
+            <li><b>Anything not listed on a model's own "leaves out" card</b>, which is specific to that part.</li>
+          </ul>
+          <p>
+            A passing simulation means your logic is consistent with the documented behavior. It is not proof that real hardware works. Build, measure and test
+            on the real board, especially for anything safety-critical.
+          </p>
+
+          <h2 id="extension">The extension and MCP server</h2>
+          <p>
+            Aletheon itself is a VS Code extension and an MCP server that read datasheets and register maps and audit their own answers. There is no published
+            release yet, so install it by building it from source (Node.js 20 or newer):
+          </p>
+          <pre>
+git clone https://github.com/denishkarnati/Aletheon
+cd Aletheon
+npm install
+npm run vsix
+code --install-extension aletheon-0.1.0.vsix</pre>
+          <p>
+            The <a href="index.html#install">install section</a> on the home page also shows how to run the MCP server. Anyone can do this: the source is public
+            under Apache-2.0.
+          </p>
+
+          <h2 id="contribute">Contributing</h2>
+          <p>
+            Data and tests help more than code. Read <a href="https://github.com/denishkarnati/Aletheon/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. To
+            propose a new part model: write <code>site/tools/devices/&lt;id&gt;.json</code> in the same shape as the existing ones, run
+            <code>node site/tools/verify-devices.mjs &lt;dir&gt;</code> against the vendor PDF you downloaded, run
+            <code>node site/tools/build-devices.mjs</code>, add known-answer tests to <code>site/tools/test-devices.mjs</code>, and make sure
+            <code>npm run test:site</code> passes. Questions and ideas: <a href="https://github.com/denishkarnati/Aletheon/issues">GitHub Issues</a>. Please
+            report security problems privately, as described in <a href="about.html#security">About and contact</a>.
+          </p>
+        </article>
+      </div>
+    </main>
+    <!-- chrome:footer -->
+    <footer class="site">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <div class="brandline">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="12" y="12" width="40" height="40" rx="9" fill="#0B0D10" stroke="#F4F5F7" stroke-width="3" />
+                <g stroke="#F4F5F7" stroke-width="3" stroke-linecap="round">
+                  <path d="M22 5v7M32 5v7M42 5v7M22 52v7M32 52v7M42 52v7M5 22h7M5 32h7M5 42h7M52 22h7M52 32h7M52 42h7" />
+                </g>
+                <path d="M22 43 32 21l10 22" fill="none" stroke="#F4F5F7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="32" cy="36" r="3.2" fill="#7BE0AE" /></svg
+              >Aletheon
+            </div>
+            <p>
+              An evidence-grounded firmware assistant, with a free, open set of embedded-systems tools: a board atlas, a parts catalog, datasheet-checked device
+              models and IoT simulators.
+            </p>
+          </div>
+          <div>
+            <h4>Platform</h4>
+            <a href="atlas.html">Chip Atlas</a><a href="parts.html">Parts catalog</a><a href="lab.html">Device Lab</a><a href="bench.html">IoT Bench</a
+            ><a href="analyzer.html">Logic Analyzer</a><a href="labs.html">Scenario Labs</a>
+          </div>
+          <div>
+            <h4>Learn</h4>
+            <a href="docs.html">Documentation</a><a href="docs.html#methodology">How the models are checked</a
+            ><a href="docs.html#limits">What the simulators leave out</a><a href="index.html#install">Install the extension</a>
+          </div>
+          <div>
+            <h4>Project</h4>
+            <a href="about.html">About and contact</a><a href="https://github.com/denishkarnati/Aletheon">Source on GitHub</a
+            ><a href="https://github.com/denishkarnati/Aletheon/issues">Report an issue</a><a href="about.html#security">Report a security problem</a
+            ><a href="privacy.html">Privacy and legal</a>
+          </div>
+        </div>
+        <div class="legal">
+          <p>
+            Open source under Apache-2.0. Aletheon is independent and is not affiliated with, sponsored by or endorsed by any chip vendor named on this site.
+            Part names and numbers belong to their owners. Simulators here are behavioral models, not circuit simulations, and never a substitute for the
+            current official datasheet or for testing on real hardware.
+          </p>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:footer -->
+
+    <script src="assets/devices-data.js"></script>
+    <script src="assets/site-stats.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/docs.js"></script>
+  </body>
+</html>

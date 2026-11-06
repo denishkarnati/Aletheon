@@ -103,6 +103,9 @@ footer.site {
   color: var(--tx3, #6c727d);
   font-size: 13px;
 }
+footer.site .wrap {
+  display: block;
+}
 footer.site .cols {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
