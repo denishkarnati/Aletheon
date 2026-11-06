@@ -2,7 +2,7 @@
   "name": "aletheon",
   "displayName": "Aletheon — Grounded Firmware Engineer",
   "description": "Hardware-aware AI for embedded firmware. Every claim is tied to a datasheet page, a build log, or a real serial capture — never an assumption.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "aletheon",
   "license": "Apache-2.0",
   "author": "Dinesh Karnati",

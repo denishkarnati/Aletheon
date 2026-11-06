@@ -42,7 +42,7 @@ error; it writes to the wrong place. Aletheon makes the evidence the product:
 ## Install
 **VS Code and compatible editors**: download the `.vsix` from [Releases](https://github.com/denishkarnati/aletheon/releases), then
 ```bash
-code --install-extension aletheon-0.1.0.vsix
+code --install-extension aletheon-0.1.1.vsix
 ```
 Run *Aletheon: Set AI Provider API Key*, pick a board in the status bar, open the Aletheon view.
 
