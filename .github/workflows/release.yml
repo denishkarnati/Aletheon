@@ -25,3 +25,14 @@ jobs:
         with:
           files: '*.vsix'
           generate_release_notes: true
+      # Store publishing runs only when you have added the account tokens as repository secrets (Settings -> Secrets and variables -> Actions).
+      - name: Publish to the VS Code Marketplace (skipped unless the VSCE_PAT secret exists)
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -n "$VSCE_PAT" ]; then npx --yes @vscode/vsce publish --no-dependencies --packagePath ./*.vsix -p "$VSCE_PAT"; else echo "VSCE_PAT is not set: skipping the Marketplace"; fi
+      - name: Publish to Open VSX (skipped unless the OVSX_PAT secret exists)
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          if [ -n "$OVSX_PAT" ]; then npx --yes ovsx publish ./*.vsix -p "$OVSX_PAT"; else echo "OVSX_PAT is not set: skipping Open VSX"; fi
